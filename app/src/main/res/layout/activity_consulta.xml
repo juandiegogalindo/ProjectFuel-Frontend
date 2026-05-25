@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- ===== TOOLBAR ===== -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:title="Consulta"
+        app:titleTextColor="@android:color/white"/>
+
+    <!-- ===== CONTENIDO ===== -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+    <!-- ================= COMBUSTIBLE ================= -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tipo de Combustible"/>
+
+    <Spinner
+        android:id="@+id/spTipoCombustible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!-- ================= CIUDAD ================= -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ciudad"
+        android:layout_marginTop="16dp"/>
+
+    <Spinner
+        android:id="@+id/spCiudad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!-- ================= ZONA ================= -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zona"
+        android:layout_marginTop="16dp"/>
+
+    <Spinner
+        android:id="@+id/spZona"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!-- ================= CONSULTAR PRECIO ================= -->
+    <Button
+        android:id="@+id/btnCalcular"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Consultar Precio"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:id="@+id/txtResultado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resultado"
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"/>
+
+    <!-- ================= GALONES ================= -->
+    <TextView
+        android:id="@+id/txtGalonesDeseados"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ingrese los Galones Deseados"
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/etGalones"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:hint="Galones"
+        android:inputType="numberDecimal" />
+
+    <Button
+        android:id="@+id/calcularGalones"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Calcular Total"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:id="@+id/txtResultadoGalones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resultado Galones"
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

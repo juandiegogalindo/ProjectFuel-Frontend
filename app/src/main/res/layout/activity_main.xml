@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp">
+
+    <Button
+        android:id="@+id/btnConsulta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+            android:text="Consulta Activity"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnInventario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Inventario Activity"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnSalidas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Salidas Activity"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnNotificador"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Notificador Activity"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnRegulador"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Regulador Precios Activity"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnControl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Control Inventario Activity"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnProgramarPedido"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Programar Pedido"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnPedidosPendientes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pedidos Pendientes"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnHorarios"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Consultar Horarios EDS"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnPedidosCancelados"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pedidos Cancelados"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnPedidosAEntregar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pedidos A Entregar"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnRecepcionCombustible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Recepcion Combustible"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnMapaEstaciones"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Estaciones de Servicio"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnSubsidio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Subsidio"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnCerrarSesion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cerrar Sesion" />
+
+</LinearLayout>
