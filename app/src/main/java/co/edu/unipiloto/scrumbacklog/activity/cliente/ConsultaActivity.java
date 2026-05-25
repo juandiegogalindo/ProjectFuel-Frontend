@@ -413,7 +413,8 @@ public class ConsultaActivity
                         .getSelectedItem()
                         .toString();
 
-        if (rol.equalsIgnoreCase("ADMIN")) {
+        if (rol.equalsIgnoreCase("ADMIN")
+                || rol.equalsIgnoreCase("CLIENTE")) {
 
             String ciudad =
                     spCiudad
@@ -424,6 +425,17 @@ public class ConsultaActivity
                     spZona
                             .getSelectedItem()
                             .toString();
+
+            Toast.makeText(
+                    this,
+                    "Consultando: "
+                            + combustible
+                            + " - "
+                            + ciudad
+                            + " - "
+                            + zona,
+                    Toast.LENGTH_LONG
+            ).show();
 
             apiService.obtenerPrecioZona(
                     combustible,
@@ -442,9 +454,21 @@ public class ConsultaActivity
 
                         txtResultado.setText(
                                 "Precio: $"
-                                        + response.body()
-                                        .getPrecio()
+                                        + response.body().getPrecio()
                         );
+
+                    } else {
+
+                        txtResultado.setText(
+                                "No se encontró precio"
+                        );
+
+                        Toast.makeText(
+                                ConsultaActivity.this,
+                                "Respuesta backend: "
+                                        + response.code(),
+                                Toast.LENGTH_LONG
+                        ).show();
                     }
                 }
 
@@ -454,10 +478,14 @@ public class ConsultaActivity
                         Throwable t
                 ) {
 
+                    txtResultado.setText(
+                            "Error conexión"
+                    );
+
                     Toast.makeText(
                             ConsultaActivity.this,
-                            "Error consultando precio",
-                            Toast.LENGTH_SHORT
+                            t.getMessage(),
+                            Toast.LENGTH_LONG
                     ).show();
                 }
             });
@@ -475,14 +503,19 @@ public class ConsultaActivity
                         Response<PrecioResponse> response
                 ) {
 
-                    if (response.isSuccessful()
-                            && response.body() != null) {
+                    Toast.makeText(
+                            ConsultaActivity.this,
+                            "CODE: " + response.code(),
+                            Toast.LENGTH_LONG
+                    ).show();
 
-                        txtResultado.setText(
-                                "Precio: $"
-                                        + response.body()
-                                        .getPrecio()
-                        );
+                    if (response.body() != null) {
+
+                        Toast.makeText(
+                                ConsultaActivity.this,
+                                "PRECIO: " + response.body().getPrecio(),
+                                Toast.LENGTH_LONG
+                        ).show();
                     }
                 }
 
@@ -492,10 +525,14 @@ public class ConsultaActivity
                         Throwable t
                 ) {
 
+                    txtResultado.setText(
+                            "Error conexión"
+                    );
+
                     Toast.makeText(
                             ConsultaActivity.this,
-                            "Error consultando precio",
-                            Toast.LENGTH_SHORT
+                            t.getMessage(),
+                            Toast.LENGTH_LONG
                     ).show();
                 }
             });
@@ -534,7 +571,7 @@ public class ConsultaActivity
                         .getSelectedItem()
                         .toString();
 
-        if (rol.equalsIgnoreCase("ADMIN")) {
+        if (rol.equalsIgnoreCase("ADMIN")|| rol.equalsIgnoreCase("CLIENTE")) {
 
             String ciudad =
                     spCiudad
