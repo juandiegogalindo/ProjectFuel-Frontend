@@ -3,8 +3,6 @@ package co.edu.unipiloto.scrumbacklog.activity.distribuidor;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,8 +26,6 @@ public class PedidosAEntregarActivity
 
     private ListView listView;
 
-    private PedidoEntregaAdapter adapter;
-
     private ApiService apiService;
 
     @Override
@@ -41,10 +37,6 @@ public class PedidosAEntregarActivity
                 R.layout.activity_pedidos_aentregar
         );
 
-        // =====================================
-        // TOOLBAR
-        // =====================================
-
         Toolbar toolbar =
                 findViewById(R.id.toolbar);
 
@@ -52,39 +44,30 @@ public class PedidosAEntregarActivity
 
         if (getSupportActionBar() != null) {
 
-            getSupportActionBar().setTitle(
-                    "Pedidos a Entregar"
-            );
+            getSupportActionBar()
+                    .setTitle("Pedidos a Entregar");
 
             getSupportActionBar()
                     .setDisplayHomeAsUpEnabled(true);
         }
 
-        // =====================================
-        // LISTVIEW
-        // =====================================
-
         listView =
                 findViewById(R.id.listViewEntregas);
-
-        // =====================================
-        // API
-        // =====================================
 
         apiService =
                 ApiClient.getClient()
                         .create(ApiService.class);
 
-        // =====================================
-        // CARGAR PEDIDOS
-        // =====================================
-
         cargarPedidos();
     }
 
-    // =====================================
-    // CARGAR PEDIDOS
-    // =====================================
+    @Override
+    public boolean onSupportNavigateUp() {
+
+        finish();
+
+        return true;
+    }
 
     private void cargarPedidos() {
 
@@ -94,15 +77,17 @@ public class PedidosAEntregarActivity
                     @Override
                     public void onResponse(
                             Call<List<Pedido>> call,
-                            Response<List<Pedido>> response) {
+                            Response<List<Pedido>> response
+                    ) {
 
                         if (response.isSuccessful()
                                 && response.body() != null) {
 
-                            adapter =
+                            PedidoEntregaAdapter adapter =
                                     new PedidoEntregaAdapter(
                                             PedidosAEntregarActivity.this,
-                                            response.body()
+                                            response.body(),
+                                            apiService
                                     );
 
                             listView.setAdapter(adapter);
@@ -111,7 +96,7 @@ public class PedidosAEntregarActivity
 
                             Toast.makeText(
                                     PedidosAEntregarActivity.this,
-                                    "Error obteniendo pedidos",
+                                    "Error cargando pedidos",
                                     Toast.LENGTH_SHORT
                             ).show();
                         }
@@ -120,7 +105,8 @@ public class PedidosAEntregarActivity
                     @Override
                     public void onFailure(
                             Call<List<Pedido>> call,
-                            Throwable t) {
+                            Throwable t
+                    ) {
 
                         Toast.makeText(
                                 PedidosAEntregarActivity.this,
@@ -130,65 +116,6 @@ public class PedidosAEntregarActivity
                     }
                 });
     }
-
-    // =====================================
-    // TOOLBAR BACK
-    // =====================================
-
-    @Override
-    public boolean onSupportNavigateUp() {
-
-        finish();
-        return true;
-    }
-
-    // =====================================
-    // MENU
-    // =====================================
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(
-                R.menu.menu_pedido_entregar,
-                menu
-        );
-
-        return true;
-    }
-
-    // =====================================
-    // MENU ACTIONS
-    // =====================================
-
-    @Override
-    public boolean onOptionsItemSelected(
-            MenuItem item) {
-
-        if (item.getItemId() == R.id.action_info) {
-
-            Toast.makeText(
-                    this,
-                    "Distribuidor lista y empaca los pedidos próximos a entregar",
-                    Toast.LENGTH_SHORT
-            ).show();
-
-            return true;
-
-        } else if (item.getItemId()
-                == R.id.action_logout) {
-
-            cerrarSesion();
-
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    // =====================================
-    // CERRAR SESION
-    // =====================================
 
     private void cerrarSesion() {
 
@@ -202,6 +129,7 @@ public class PedidosAEntregarActivity
                 prefs.edit();
 
         editor.clear();
+
         editor.apply();
 
         Intent intent =

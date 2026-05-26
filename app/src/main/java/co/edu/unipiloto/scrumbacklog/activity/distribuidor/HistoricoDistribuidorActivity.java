@@ -3,6 +3,8 @@ package co.edu.unipiloto.scrumbacklog.activity.distribuidor;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -21,7 +23,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PedidosPendientesActivity
+public class HistoricoDistribuidorActivity
         extends AppCompatActivity {
 
     private ListView listView;
@@ -34,7 +36,7 @@ public class PedidosPendientesActivity
         super.onCreate(savedInstanceState);
 
         setContentView(
-                R.layout.activity_pedidos_pendientes
+                R.layout.activity_historico_distribuidor
         );
 
         Toolbar toolbar =
@@ -45,33 +47,25 @@ public class PedidosPendientesActivity
         if (getSupportActionBar() != null) {
 
             getSupportActionBar()
-                    .setTitle("Pedidos Pendientes");
+                    .setTitle("Histórico");
 
             getSupportActionBar()
                     .setDisplayHomeAsUpEnabled(true);
         }
 
         listView =
-                findViewById(R.id.listViewPedidos);
+                findViewById(R.id.listViewHistorico);
 
         apiService =
                 ApiClient.getClient()
                         .create(ApiService.class);
 
-        cargarPedidos();
+        cargarHistorico();
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
+    private void cargarHistorico() {
 
-        finish();
-
-        return true;
-    }
-
-    private void cargarPedidos() {
-
-        apiService.obtenerPedidosPendientes()
+        apiService.obtenerTodosPedidos()
                 .enqueue(new Callback<List<Pedido>>() {
 
                     @Override
@@ -83,11 +77,10 @@ public class PedidosPendientesActivity
                         if (response.isSuccessful()
                                 && response.body() != null) {
 
-                            PedidoAdapter adapter =
-                                    new PedidoAdapter(
-                                            PedidosPendientesActivity.this,
-                                            response.body(),
-                                            apiService
+                            HistoricoAdapter adapter =
+                                    new HistoricoAdapter(
+                                            HistoricoDistribuidorActivity.this,
+                                            response.body()
                                     );
 
                             listView.setAdapter(adapter);
@@ -95,8 +88,8 @@ public class PedidosPendientesActivity
                         } else {
 
                             Toast.makeText(
-                                    PedidosPendientesActivity.this,
-                                    "Error cargando pedidos",
+                                    HistoricoDistribuidorActivity.this,
+                                    "Error cargando histórico",
                                     Toast.LENGTH_SHORT
                             ).show();
                         }
@@ -109,12 +102,56 @@ public class PedidosPendientesActivity
                     ) {
 
                         Toast.makeText(
-                                PedidosPendientesActivity.this,
+                                HistoricoDistribuidorActivity.this,
                                 "Error conexión backend",
                                 Toast.LENGTH_LONG
                         ).show();
                     }
                 });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+
+        finish();
+
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(
+                R.menu.menu_pedido_entregar,
+                menu
+        );
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId()
+                == R.id.action_info) {
+
+            Toast.makeText(
+                    this,
+                    "Historial completo de movimientos.",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return true;
+
+        } else if (item.getItemId()
+                == R.id.action_logout) {
+
+            cerrarSesion();
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void cerrarSesion() {
@@ -125,12 +162,7 @@ public class PedidosPendientesActivity
                         MODE_PRIVATE
                 );
 
-        SharedPreferences.Editor editor =
-                prefs.edit();
-
-        editor.clear();
-
-        editor.apply();
+        prefs.edit().clear().apply();
 
         Intent intent =
                 new Intent(

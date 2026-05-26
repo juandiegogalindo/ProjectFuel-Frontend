@@ -106,6 +106,27 @@
         android:layout_marginBottom="16dp"/>
 
     <Button
+        android:id="@+id/btnHistoricoDistribuidor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Historico de Pedidos"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnMapaDistribuidor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mapa Distribuidor"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnDashboard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Dashboard"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
         android:id="@+id/btnCerrarSesion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

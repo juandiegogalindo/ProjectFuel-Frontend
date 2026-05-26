@@ -13,8 +13,11 @@ import co.edu.unipiloto.scrumbacklog.activity.cliente.HorariosActivity;
 import co.edu.unipiloto.scrumbacklog.activity.cliente.MapaEstacionesActivity;
 import co.edu.unipiloto.scrumbacklog.activity.cliente.SubsidioActivity;
 import co.edu.unipiloto.scrumbacklog.activity.distribuidor.ControlInventarioActivity;
+import co.edu.unipiloto.scrumbacklog.activity.distribuidor.DashboardDistribuidorActivity;
+import co.edu.unipiloto.scrumbacklog.activity.distribuidor.HistoricoDistribuidorActivity;
 import co.edu.unipiloto.scrumbacklog.activity.distribuidor.PedidosAEntregarActivity;
 import co.edu.unipiloto.scrumbacklog.activity.distribuidor.PedidosPendientesActivity;
+import co.edu.unipiloto.scrumbacklog.activity.distribuidor.RutaDistribucionActivity;
 import co.edu.unipiloto.scrumbacklog.activity.operador.PedidosCanceladosActivity;
 import co.edu.unipiloto.scrumbacklog.activity.operador.ProgramarPedidoActivity;
 import co.edu.unipiloto.scrumbacklog.activity.logIn.LoginActivity;
@@ -29,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
     Button btnConsulta, btnInventario, btnSalidas, btnNotificador,
             btnRegulador, btnControl, btnProgramarPedido , btnHorarios,
             btnPedidosPendientes, btnPedidosCancelados, btnPedidosAEntregar, btnRecepcionCombustible,
-            btnMapaEstaciones, btnSubsidio, btnCerrarSesion;
+            btnMapaEstaciones, btnSubsidio, btnHistoricoDistribuidor, btnMapaDistribuidor,
+            btnDashboard, btnCerrarSesion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
         btnRecepcionCombustible = findViewById(R.id.btnRecepcionCombustible);
         btnMapaEstaciones = findViewById(R.id.btnMapaEstaciones);
         btnSubsidio = findViewById(R.id.btnSubsidio);
+        btnHistoricoDistribuidor = findViewById(R.id.btnHistoricoDistribuidor);
+        btnMapaDistribuidor = findViewById(R.id.btnMapaDistribuidor);
+        btnDashboard = findViewById(R.id.btnDashboard);
         btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
 
         configurarAccesoPorRol();
@@ -97,6 +104,15 @@ public class MainActivity extends AppCompatActivity {
         btnSubsidio.setOnClickListener(v ->
                 startActivity(new Intent(this, SubsidioActivity.class)));
 
+        btnHistoricoDistribuidor.setOnClickListener(v ->
+                startActivity(new Intent(this, HistoricoDistribuidorActivity.class)));
+
+        btnMapaDistribuidor.setOnClickListener(v ->
+                startActivity(new Intent(this, RutaDistribucionActivity.class)));
+
+        btnDashboard.setOnClickListener(v ->
+                startActivity(new Intent(this, DashboardDistribuidorActivity.class)));
+
         btnCerrarSesion.setOnClickListener(view -> {
             SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
             prefs.edit().clear().apply();
@@ -140,6 +156,12 @@ public class MainActivity extends AppCompatActivity {
         btnMapaEstaciones.setEnabled(false);
         btnSubsidio.setVisibility(View.GONE);
         btnSubsidio.setEnabled(false);
+        btnHistoricoDistribuidor.setVisibility(View.GONE);
+        btnHistoricoDistribuidor.setEnabled(false);
+        btnMapaDistribuidor.setVisibility(View.GONE);
+        btnMapaDistribuidor.setEnabled(false);
+        btnDashboard.setVisibility(View.GONE);
+        btnDashboard.setEnabled(false);
 
         if (rol == null) return;
 
@@ -197,6 +219,12 @@ public class MainActivity extends AppCompatActivity {
                 btnPedidosPendientes.setEnabled(true);
                 btnPedidosAEntregar.setVisibility(View.VISIBLE);
                 btnPedidosAEntregar.setEnabled(true);
+                btnHistoricoDistribuidor.setVisibility(View.VISIBLE);
+                btnHistoricoDistribuidor.setEnabled(true);
+                btnMapaDistribuidor.setVisibility(View.VISIBLE);
+                btnMapaDistribuidor.setEnabled(true);
+                btnDashboard.setVisibility(View.VISIBLE);
+                btnDashboard.setEnabled(true);
                 break;
         }
     }

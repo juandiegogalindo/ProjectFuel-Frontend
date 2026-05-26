@@ -3,6 +3,7 @@ package co.edu.unipiloto.scrumbacklog.api;
 import java.util.List;
 
 import co.edu.unipiloto.scrumbacklog.model.Combustible;
+import co.edu.unipiloto.scrumbacklog.model.DashboardDistribuidor;
 import co.edu.unipiloto.scrumbacklog.model.Pedido;
 import co.edu.unipiloto.scrumbacklog.model.Ubicacion;
 import co.edu.unipiloto.scrumbacklog.model.Usuario;
@@ -126,11 +127,18 @@ public interface ApiService {
 
     @PUT("pedidos/{idPedido}/entregar")
     Call<Void> entregarPedido(
-            @Path("idPedido") int idPedido
+            @Path("idPedido") int idPedido,
+            @Query("fecha") String fecha
     );
 
     @POST("subsidios/validar")
     Call<SubsidioResponse> validarSubsidio(
             @Body SubsidioRequest request
     );
+
+    @GET("pedidos")
+    Call<List<Pedido>> obtenerTodosPedidos();
+
+    @GET("pedidos/dashboard/distribuidor")
+    Call<DashboardDistribuidor> obtenerDashboardDistribuidor();
 }

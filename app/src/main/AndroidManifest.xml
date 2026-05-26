@@ -17,9 +17,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ScrumBacklog">
         <activity
-            android:name=".activity.cliente.SubsidioAprobadoActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ScrumBacklog" />
+            android:name=".activity.distribuidor.DashboardDistribuidorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.distribuidor.RutaDistribucionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.distribuidor.HistoricoDistribuidorActivity"
+            android:exported="false" />
         <activity
             android:name=".activity.cliente.SubsidioActivity"
             android:exported="false" />

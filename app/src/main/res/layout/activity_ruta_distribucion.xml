@@ -2,7 +2,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -13,18 +13,17 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="#810615"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:titleTextColor="@android:color/white"/>
+        android:title="Ruta Inteligente"
+        android:titleTextColor="@android:color/white"/>
 
-    <!-- LISTVIEW -->
+    <!-- MAPA -->
 
-    <ListView
-        android:id="@+id/listViewPedidos"
+    <fragment
+        android:id="@+id/mapRuta"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="#DADADA"
-        android:dividerHeight="8dp"
-        android:padding="10dp"/>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
