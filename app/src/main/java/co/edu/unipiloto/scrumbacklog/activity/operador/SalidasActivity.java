@@ -729,7 +729,7 @@ public class SalidasActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(
-                R.menu.menu_consulta,
+                R.menu.menu_toolbar_principal,
                 menu
         );
 

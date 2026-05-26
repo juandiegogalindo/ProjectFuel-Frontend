@@ -363,7 +363,7 @@ public class InventarioActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(
-                R.menu.menu_inventario,
+                R.menu.menu_toolbar_principal,
                 menu
         );
 

@@ -651,7 +651,7 @@ public class ReguladorPreciosActivity
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(
-                R.menu.menu_regulador,
+                R.menu.menu_toolbar_principal,
                 menu
         );
 

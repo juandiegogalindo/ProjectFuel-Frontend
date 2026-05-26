@@ -122,7 +122,7 @@ public class HistoricoDistribuidorActivity
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(
-                R.menu.menu_pedido_entregar,
+                R.menu.menu_toolbar_principal,
                 menu
         );
 

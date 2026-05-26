@@ -147,7 +147,7 @@ public class PedidosCanceladosActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(
-                R.menu.menu_pedido_cancelado,
+                R.menu.menu_toolbar_principal,
                 menu
         );
 

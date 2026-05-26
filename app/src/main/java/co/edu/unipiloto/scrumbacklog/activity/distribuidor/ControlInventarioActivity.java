@@ -169,7 +169,7 @@ public class ControlInventarioActivity
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(
-                R.menu.menu_control_inventario,
+                R.menu.menu_toolbar_principal,
                 menu
         );
 

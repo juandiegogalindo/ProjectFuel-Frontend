@@ -89,7 +89,7 @@ public class HorariosActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.menu_horario, menu);
+        getMenuInflater().inflate(R.menu.menu_toolbar_principal, menu);
         return true;
     }
 

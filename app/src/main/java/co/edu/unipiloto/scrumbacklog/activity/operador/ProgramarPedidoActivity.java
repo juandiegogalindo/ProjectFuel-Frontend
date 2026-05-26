@@ -118,7 +118,7 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_pedido, menu);
+        getMenuInflater().inflate(R.menu.menu_toolbar_principal, menu);
         return true;
     }
 

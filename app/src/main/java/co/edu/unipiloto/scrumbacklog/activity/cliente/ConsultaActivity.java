@@ -339,7 +339,7 @@ public class ConsultaActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_consulta, menu);
+        getMenuInflater().inflate(R.menu.menu_toolbar_principal, menu);
         return true;
     }
 
