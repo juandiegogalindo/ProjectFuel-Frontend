@@ -13,9 +13,9 @@ public class Ubicacion {
     private String estado;
 
     private String direccion;
-    private double latitud;
+    private Double latitud;
 
-    private double longitud;
+    private Double longitud;
 
     // =====================================================
     // NUEVOS CAMPOS
@@ -69,10 +69,6 @@ public class Ubicacion {
         this.estado = estado;
     }
 
-    // =====================================================
-    // HORA APERTURA
-    // =====================================================
-
     public String getHoraApertura() {
         return horaApertura;
     }
@@ -102,19 +98,19 @@ public class Ubicacion {
         this.direccion = direccion;
     }
 
-    public double getLatitud() {
+    public Double getLatitud() {
         return latitud;
     }
 
-    public void setLatitud(double latitud) {
+    public void setLatitud(Double latitud) {
         this.latitud = latitud;
     }
 
-    public double getLongitud() {
+    public Double getLongitud() {
         return longitud;
     }
 
-    public void setLongitud(double longitud) {
+    public void setLongitud(Double longitud) {
         this.longitud = longitud;
     }
 }

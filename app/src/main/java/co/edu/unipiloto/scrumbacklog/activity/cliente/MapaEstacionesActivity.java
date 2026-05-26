@@ -11,44 +11,35 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-
 import com.google.maps.android.PolyUtil;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import co.edu.unipiloto.scrumbacklog.R;
 import co.edu.unipiloto.scrumbacklog.activity.logIn.LoginActivity;
 import co.edu.unipiloto.scrumbacklog.api.ApiClient;
@@ -58,9 +49,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MapaEstacionesActivity
-        extends AppCompatActivity
-        implements OnMapReadyCallback {
+public class MapaEstacionesActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -72,8 +61,7 @@ public class MapaEstacionesActivity
 
     private LocationCallback locationCallback;
 
-    private final ArrayList<LatLng> recorrido =
-            new ArrayList<>();
+    private final ArrayList<LatLng> recorrido = new ArrayList<>();
 
     private Polyline polylineRecorrido;
 
@@ -86,250 +74,130 @@ public class MapaEstacionesActivity
 
         super.onCreate(savedInstanceState);
 
-        setContentView(
-                R.layout.activity_mapa_estaciones
-        );
+        setContentView(R.layout.activity_mapa_estaciones);
 
-        // =====================================================
-        // API
-        // =====================================================
+        apiService = ApiClient.getClient().create(ApiService.class);
 
-        apiService =
-                ApiClient.getClient()
-                        .create(ApiService.class);
-
-        // =====================================================
-        // UBICACION
-        // =====================================================
-
-        fusedLocationClient =
-                LocationServices
-                        .getFusedLocationProviderClient(this);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // =====================================================
         // TOOLBAR
         // =====================================================
 
-        Toolbar toolbar =
-                findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
 
-            getSupportActionBar()
-                    .setTitle("Mapa Estaciones");
+            getSupportActionBar().setTitle("Mapa Estaciones");
 
-            getSupportActionBar()
-                    .setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         // =====================================================
         // MAPA
         // =====================================================
 
-        SupportMapFragment mapFragment =
-                (SupportMapFragment)
-                        getSupportFragmentManager()
-                                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
         if (mapFragment != null) {
-
             mapFragment.getMapAsync(this);
         }
     }
-
-    // =====================================================
-    // TOOLBAR BACK
-    // =====================================================
 
     @Override
     public boolean onSupportNavigateUp() {
 
         finish();
-
         return true;
     }
-
-    // =====================================================
-    // MENU
-    // =====================================================
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(
-                R.menu.menu_consulta,
-                menu
-        );
-
+        getMenuInflater().inflate(R.menu.menu_consulta, menu);
         return true;
     }
 
-    // =====================================================
-    // MENU ACTIONS
-    // =====================================================
-
     @Override
-    public boolean onOptionsItemSelected(
-            MenuItem item
-    ) {
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId()
-                == R.id.action_info) {
+        if (item.getItemId() == R.id.action_info) {
 
-            Toast.makeText(
-                    this,
-                    "Mapa de estaciones disponibles",
-                    Toast.LENGTH_SHORT
-            ).show();
-
+            Toast.makeText(this, "Mapa de estaciones disponibles", Toast.LENGTH_SHORT).show();
             return true;
         }
 
-        if (item.getItemId()
-                == R.id.action_logout) {
+        if (item.getItemId() == R.id.action_logout) {
 
             cerrarSesion();
-
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-    // =====================================================
-    // CERRAR SESION
-    // =====================================================
-
     private void cerrarSesion() {
 
-        SharedPreferences prefs =
-                getSharedPreferences(
-                        "sesion",
-                        MODE_PRIVATE
-                );
+        SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
 
-        SharedPreferences.Editor editor =
-                prefs.edit();
+        SharedPreferences.Editor editor = prefs.edit();
 
         editor.clear();
-
         editor.apply();
 
-        Intent intent =
-                new Intent(
-                        this,
-                        LoginActivity.class
-                );
+        Intent intent = new Intent(this, LoginActivity.class);
 
-        intent.setFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
-        );
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         startActivity(intent);
-
         finish();
     }
 
-    // =====================================================
-    // ACTIVAR UBICACION
-    // =====================================================
-
     private void activarUbicacion() {
 
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                    },
-                    LOCATION_PERMISSION_REQUEST
-            );
-
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST);
             return;
         }
 
         mMap.setMyLocationEnabled(true);
-
-        mMap.getUiSettings()
-                .setMyLocationButtonEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
-
-    // =====================================================
-    // ACTUALIZAR UBICACION
-    // =====================================================
 
     private void iniciarActualizacionesUbicacion() {
 
-        LocationRequest locationRequest =
-                new LocationRequest.Builder(
-                        Priority.PRIORITY_HIGH_ACCURACY,
-                        5000
-                ).build();
+        LocationRequest locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000).build();
 
-        locationCallback =
-                new LocationCallback() {
+        locationCallback = new LocationCallback() {
 
                     @Override
-                    public void onLocationResult(
-                            @NonNull LocationResult locationResult
-                    ) {
+                    public void onLocationResult(@NonNull LocationResult locationResult) {
 
                         super.onLocationResult(locationResult);
+                        for (Location location : locationResult.getLocations()) {
 
-                        for (Location location :
-                                locationResult.getLocations()) {
+                            LatLng nuevaPosicion = new LatLng(location.getLatitude(), location.getLongitude());
 
-                            LatLng nuevaPosicion =
-                                    new LatLng(
-                                            location.getLatitude(),
-                                            location.getLongitude()
-                                    );
+                            ubicacionActual = nuevaPosicion;
+                            recorrido.add(nuevaPosicion);
 
-                            ubicacionActual =
-                                    nuevaPosicion;
-
-                            recorrido.add(
-                                    nuevaPosicion
-                            );
-
-                            if (polylineRecorrido
-                                    != null) {
-
+                            if (polylineRecorrido != null) {
                                 polylineRecorrido.remove();
                             }
 
-                            polylineRecorrido =
-                                    mMap.addPolyline(
-
-                                            new PolylineOptions()
-                                                    .addAll(recorrido)
-                                                    .width(10)
-                                                    .color(Color.RED)
-                                    );
+                            polylineRecorrido = mMap.addPolyline(new PolylineOptions().addAll(recorrido).width(10).color(Color.RED)
+                            );
                         }
                     }
                 };
 
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED) {
-
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
 
-        fusedLocationClient.requestLocationUpdates(
-                locationRequest,
-                locationCallback,
-                getMainLooper()
-        );
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, getMainLooper());
     }
 
     // =====================================================
@@ -559,6 +427,12 @@ public class MapaEstacionesActivity
 
                             for (Ubicacion estacion
                                     : estaciones) {
+
+                                if (estacion.getLatitud() == null
+                                        || estacion.getLongitud() == null) {
+
+                                    continue;
+                                }
 
                                 LatLng posicion =
                                         new LatLng(
