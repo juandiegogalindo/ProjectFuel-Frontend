@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ import co.edu.unipiloto.scrumbacklog.api.MovimientoRequest;
 import co.edu.unipiloto.scrumbacklog.api.MovimientoResponse;
 import co.edu.unipiloto.scrumbacklog.model.Combustible;
 
+import co.edu.unipiloto.scrumbacklog.model.Pedido;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -51,6 +53,8 @@ public class InventarioActivity extends AppCompatActivity {
     int idUbicacion;
 
     ApiService apiService;
+
+    ListView listPedidosRecibidos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,11 +99,16 @@ public class InventarioActivity extends AppCompatActivity {
         txtInventarioExtra =
                 findViewById(R.id.txtInventarioExtra);
 
+        listPedidosRecibidos =
+                findViewById(R.id.listPedidosRecibidos);
+
         cargarCombustibles();
 
         actualizarInventarioOperador();
 
         btnAgregar.setOnClickListener(v -> registrarEntrada());
+
+        cargarPedidosPendientes();
     }
 
     // =====================================================
@@ -313,6 +322,59 @@ public class InventarioActivity extends AppCompatActivity {
                         Toast.makeText(
                                 InventarioActivity.this,
                                 "Error obteniendo inventario",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                });
+    }
+
+    // =====================================================
+// PEDIDOS RECIBIDOS PENDIENTES
+// =====================================================
+
+    private void cargarPedidosPendientes() {
+
+        apiService.obtenerPedidosEntregados(idUbicacion)
+                .enqueue(new Callback<List<Pedido>>() {
+
+                    @Override
+                    public void onResponse(
+                            Call<List<Pedido>> call,
+                            Response<List<Pedido>> response
+                    ) {
+
+                        if (response.isSuccessful()
+                                && response.body() != null) {
+
+                            PedidoInventarioAdapter adapter =
+                                    new PedidoInventarioAdapter(
+                                            InventarioActivity.this,
+                                            response.body(),
+                                            idUbicacion,
+                                            InventarioActivity.this
+                                    );
+
+                            listPedidosRecibidos.setAdapter(adapter);
+
+                        } else {
+
+                            Toast.makeText(
+                                    InventarioActivity.this,
+                                    "No hay pedidos pendientes",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(
+                            Call<List<Pedido>> call,
+                            Throwable t
+                    ) {
+
+                        Toast.makeText(
+                                InventarioActivity.this,
+                                "Error conexión backend",
                                 Toast.LENGTH_SHORT
                         ).show();
                     }

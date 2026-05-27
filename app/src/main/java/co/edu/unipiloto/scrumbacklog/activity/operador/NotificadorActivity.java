@@ -268,18 +268,21 @@ public class NotificadorActivity extends AppCompatActivity {
 
     private void cargarCiudades() {
 
-        ArrayList<String> nombres = new ArrayList<>();
+        ArrayList<String> ciudades = new ArrayList<>();
 
         for (Ubicacion u : listaUbicaciones) {
 
-            nombres.add(u.getNombre());
+            if (!ciudades.contains(u.getCiudad())) {
+
+                ciudades.add(u.getCiudad());
+            }
         }
 
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(
                         this,
                         android.R.layout.simple_spinner_dropdown_item,
-                        nombres
+                        ciudades
                 );
 
         spCiudad.setAdapter(adapter);
@@ -294,14 +297,9 @@ public class NotificadorActivity extends AppCompatActivity {
                             int position,
                             long id) {
 
-                        String nombre =
-                                spCiudad.getSelectedItem().toString();
-
-                        spZona.setAdapter(new ArrayAdapter<>(
-                                NotificadorActivity.this,
-                                android.R.layout.simple_spinner_dropdown_item,
-                                Collections.singletonList(nombre)
-                        ));
+                        cargarZonas(
+                                spCiudad.getSelectedItem().toString()
+                        );
                     }
 
                     @Override
@@ -309,6 +307,31 @@ public class NotificadorActivity extends AppCompatActivity {
                             AdapterView<?> parent) {
                     }
                 });
+    }
+
+    private void cargarZonas(String ciudad) {
+
+        ArrayList<String> zonas = new ArrayList<>();
+
+        for (Ubicacion u : listaUbicaciones) {
+
+            if (u.getCiudad().equals(ciudad)) {
+
+                if (!zonas.contains(u.getLocalidad())) {
+
+                    zonas.add(u.getLocalidad());
+                }
+            }
+        }
+
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<>(
+                        this,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        zonas
+                );
+
+        spZona.setAdapter(adapter);
     }
 
     // =====================================================

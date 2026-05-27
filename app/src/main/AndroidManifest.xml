@@ -17,6 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ScrumBacklog">
         <activity
+            android:name=".activity.operador.HistorialOperadorActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.distribuidor.DashboardDistribuidorActivity"
             android:exported="false" />
         <activity

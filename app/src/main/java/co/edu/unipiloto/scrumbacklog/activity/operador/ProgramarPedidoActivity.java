@@ -299,10 +299,12 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
                 this,
                 (view, year, month, day) -> {
 
-                    String fecha =
-                            year + "-" +
-                                    (month + 1) + "-" +
-                                    day;
+                    String fecha = String.format(
+                            "%04d-%02d-%02d",
+                            year,
+                            month + 1,
+                            day
+                    );
 
                     etFecha.setText(fecha);
                 },
@@ -319,6 +321,17 @@ public class ProgramarPedidoActivity extends AppCompatActivity {
     // =====================================================
 
     private void guardarPedido() {
+
+        if (idUbicacionUsuario == -1) {
+
+            Toast.makeText(
+                    this,
+                    "Usuario sin ubicación",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
+        }
 
         String cantidadTexto =
                 etCantidad.getText().toString().trim();

@@ -18,6 +18,7 @@ import co.edu.unipiloto.scrumbacklog.activity.distribuidor.HistoricoDistribuidor
 import co.edu.unipiloto.scrumbacklog.activity.distribuidor.PedidosAEntregarActivity;
 import co.edu.unipiloto.scrumbacklog.activity.distribuidor.PedidosPendientesActivity;
 import co.edu.unipiloto.scrumbacklog.activity.distribuidor.RutaDistribucionActivity;
+import co.edu.unipiloto.scrumbacklog.activity.operador.HistorialOperadorActivity;
 import co.edu.unipiloto.scrumbacklog.activity.operador.PedidosCanceladosActivity;
 import co.edu.unipiloto.scrumbacklog.activity.operador.ProgramarPedidoActivity;
 import co.edu.unipiloto.scrumbacklog.activity.logIn.LoginActivity;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
             btnRegulador, btnControl, btnProgramarPedido , btnHorarios,
             btnPedidosPendientes, btnPedidosCancelados, btnPedidosAEntregar, btnRecepcionCombustible,
             btnMapaEstaciones, btnSubsidio, btnHistoricoDistribuidor, btnMapaDistribuidor,
-            btnDashboard, btnCerrarSesion;
+            btnDashboard, btnHistoricoOperador, btnCerrarSesion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         btnHistoricoDistribuidor = findViewById(R.id.btnHistoricoDistribuidor);
         btnMapaDistribuidor = findViewById(R.id.btnMapaDistribuidor);
         btnDashboard = findViewById(R.id.btnDashboard);
+        btnHistoricoOperador = findViewById(R.id.btnHistoricoOperador);
         btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
 
         configurarAccesoPorRol();
@@ -113,6 +115,9 @@ public class MainActivity extends AppCompatActivity {
         btnDashboard.setOnClickListener(v ->
                 startActivity(new Intent(this, DashboardDistribuidorActivity.class)));
 
+        btnHistoricoOperador.setOnClickListener(v ->
+                startActivity(new Intent(this, HistorialOperadorActivity.class)));
+
         btnCerrarSesion.setOnClickListener(view -> {
             SharedPreferences prefs = getSharedPreferences("sesion", MODE_PRIVATE);
             prefs.edit().clear().apply();
@@ -162,6 +167,8 @@ public class MainActivity extends AppCompatActivity {
         btnMapaDistribuidor.setEnabled(false);
         btnDashboard.setVisibility(View.GONE);
         btnDashboard.setEnabled(false);
+        btnHistoricoOperador.setVisibility(View.GONE);
+        btnHistoricoOperador.setEnabled(false);
 
         if (rol == null) return;
 
@@ -197,6 +204,8 @@ public class MainActivity extends AppCompatActivity {
                 btnPedidosCancelados.setEnabled(true);
                 btnRecepcionCombustible.setVisibility(View.VISIBLE);
                 btnRecepcionCombustible.setEnabled(true);
+                btnHistoricoOperador.setVisibility(View.VISIBLE);
+                btnHistoricoOperador.setEnabled(true);
                 break;
 
             case "cliente":

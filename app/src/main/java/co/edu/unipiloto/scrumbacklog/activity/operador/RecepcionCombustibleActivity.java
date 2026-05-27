@@ -105,10 +105,12 @@ public class RecepcionCombustibleActivity
                 if (response.isSuccessful()
                         && response.body() != null) {
 
-                    RecepcionAdapter adapter =
-                            new RecepcionAdapter(
+                    PedidoInventarioAdapter adapter =
+                            new PedidoInventarioAdapter(
                                     RecepcionCombustibleActivity.this,
-                                    response.body()
+                                    response.body(),
+                                    idUbicacionUsuario,
+                                    RecepcionCombustibleActivity.this
                             );
 
                     listView.setAdapter(adapter);
