@@ -15,9 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.List;
 
 import co.edu.unipiloto.scrumbacklog.R;
-import co.edu.unipiloto.scrumbacklog.api.ApiClient;
-import co.edu.unipiloto.scrumbacklog.api.ApiService;
-import co.edu.unipiloto.scrumbacklog.api.RegisterRequest;
+import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiClient;
+import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiService;
+import co.edu.unipiloto.scrumbacklog.api.login.RegisterRequest;
 import co.edu.unipiloto.scrumbacklog.model.Usuario;
 import co.edu.unipiloto.scrumbacklog.model.Ubicacion;
 

@@ -1,4 +1,4 @@
-package co.edu.unipiloto.scrumbacklog.api;
+package co.edu.unipiloto.scrumbacklog.api.login;
 
 public class RegisterRequest {
 

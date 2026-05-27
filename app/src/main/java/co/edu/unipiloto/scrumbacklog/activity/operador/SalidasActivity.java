@@ -18,8 +18,8 @@ import java.util.Locale;
 
 import co.edu.unipiloto.scrumbacklog.R;
 import co.edu.unipiloto.scrumbacklog.activity.logIn.LoginActivity;
-import co.edu.unipiloto.scrumbacklog.api.ApiClient;
-import co.edu.unipiloto.scrumbacklog.api.ApiService;
+import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiClient;
+import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiService;
 import co.edu.unipiloto.scrumbacklog.api.InventarioResponse;
 import co.edu.unipiloto.scrumbacklog.api.MovimientoRequest;
 import co.edu.unipiloto.scrumbacklog.api.MovimientoResponse;

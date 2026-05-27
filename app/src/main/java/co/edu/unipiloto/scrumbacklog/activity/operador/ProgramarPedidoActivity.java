@@ -19,8 +19,8 @@ import java.util.List;
 
 import co.edu.unipiloto.scrumbacklog.R;
 import co.edu.unipiloto.scrumbacklog.activity.logIn.LoginActivity;
-import co.edu.unipiloto.scrumbacklog.api.ApiClient;
-import co.edu.unipiloto.scrumbacklog.api.ApiService;
+import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiClient;
+import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiService;
 import co.edu.unipiloto.scrumbacklog.model.Combustible;
 import co.edu.unipiloto.scrumbacklog.model.Pedido;
 import co.edu.unipiloto.scrumbacklog.model.Ubicacion;

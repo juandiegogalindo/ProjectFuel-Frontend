@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 
 import co.edu.unipiloto.scrumbacklog.R;
-import co.edu.unipiloto.scrumbacklog.api.ApiService;
+import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiService;
 import co.edu.unipiloto.scrumbacklog.model.Pedido;
 
 import retrofit2.Call;

@@ -11,11 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import co.edu.unipiloto.scrumbacklog.R;
 import co.edu.unipiloto.scrumbacklog.activity.MainActivity;
-import co.edu.unipiloto.scrumbacklog.api.ApiClient;
-import co.edu.unipiloto.scrumbacklog.api.ApiService;
-import co.edu.unipiloto.scrumbacklog.api.LoginRequest;
-import co.edu.unipiloto.scrumbacklog.api.LoginResponse;
-import co.edu.unipiloto.scrumbacklog.api.UsuarioResponse;
+import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiClient;
+import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiService;
+import co.edu.unipiloto.scrumbacklog.api.login.LoginRequest;
+import co.edu.unipiloto.scrumbacklog.api.login.LoginResponse;
 import co.edu.unipiloto.scrumbacklog.model.Usuario;
 
 import retrofit2.Call;

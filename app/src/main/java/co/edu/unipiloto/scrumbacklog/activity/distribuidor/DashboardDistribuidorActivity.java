@@ -1,6 +1,5 @@
 package co.edu.unipiloto.scrumbacklog.activity.distribuidor;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -10,8 +9,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import co.edu.unipiloto.scrumbacklog.R;
 
-import co.edu.unipiloto.scrumbacklog.api.ApiClient;
-import co.edu.unipiloto.scrumbacklog.api.ApiService;
+import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiClient;
+import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiService;
 
 import co.edu.unipiloto.scrumbacklog.model.DashboardDistribuidor;
 

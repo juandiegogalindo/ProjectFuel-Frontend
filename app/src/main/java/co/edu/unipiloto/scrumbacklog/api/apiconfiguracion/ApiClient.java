@@ -1,4 +1,4 @@
-package co.edu.unipiloto.scrumbacklog.api;
+package co.edu.unipiloto.scrumbacklog.api.apiconfiguracion;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

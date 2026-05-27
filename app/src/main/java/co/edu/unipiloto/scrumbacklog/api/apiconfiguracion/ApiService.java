@@ -1,7 +1,16 @@
-package co.edu.unipiloto.scrumbacklog.api;
+package co.edu.unipiloto.scrumbacklog.api.apiconfiguracion;
 
 import java.util.List;
 
+import co.edu.unipiloto.scrumbacklog.api.InventarioResponse;
+import co.edu.unipiloto.scrumbacklog.api.login.LoginRequest;
+import co.edu.unipiloto.scrumbacklog.api.login.LoginResponse;
+import co.edu.unipiloto.scrumbacklog.api.MovimientoRequest;
+import co.edu.unipiloto.scrumbacklog.api.MovimientoResponse;
+import co.edu.unipiloto.scrumbacklog.api.PrecioResponse;
+import co.edu.unipiloto.scrumbacklog.api.login.RegisterRequest;
+import co.edu.unipiloto.scrumbacklog.api.SubsidioRequest;
+import co.edu.unipiloto.scrumbacklog.api.SubsidioResponse;
 import co.edu.unipiloto.scrumbacklog.model.Combustible;
 import co.edu.unipiloto.scrumbacklog.model.DashboardDistribuidor;
 import co.edu.unipiloto.scrumbacklog.model.Pedido;
@@ -15,7 +24,6 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import retrofit2.http.DELETE;
 
 public interface ApiService {
 

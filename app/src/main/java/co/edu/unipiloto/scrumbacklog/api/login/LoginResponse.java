@@ -1,4 +1,4 @@
-package co.edu.unipiloto.scrumbacklog.api;
+package co.edu.unipiloto.scrumbacklog.api.login;
 
 import co.edu.unipiloto.scrumbacklog.model.Usuario;
 
