@@ -216,7 +216,7 @@ public class RegisterActivity extends AppCompatActivity {
         int idUbicacion =
                 ubicacionSeleccionada.getIdUbicacion();
 
-        String rol = "operador";
+        String rol = "cliente";
 
         RegisterRequest request =
                 new RegisterRequest(

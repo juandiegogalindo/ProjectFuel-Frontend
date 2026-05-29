@@ -86,11 +86,10 @@ public class PedidosCanceladosActivity extends AppCompatActivity {
                             List<Pedido> pedidosFiltrados =
                                     new java.util.ArrayList<>();
 
-                            for (Pedido pedido
-                                    : response.body()) {
+                            for (Pedido pedido : response.body()) {
 
-                                if (pedido.getIdUbicacion()
-                                        == idUbicacionUsuario) {
+                                if (pedido.getIdUbicacion() != null
+                                        && pedido.getIdUbicacion() == idUbicacionUsuario) {
 
                                     pedidosFiltrados.add(pedido);
                                 }

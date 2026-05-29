@@ -32,7 +32,6 @@ public interface ApiService {
 
     @POST("usuarios/registro")
     Call<Usuario> registrarUsuario(@Body RegisterRequest request);
-
     @GET("ubicaciones")
     Call<List<Ubicacion>> obtenerUbicaciones();
 
