@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ScrumBacklog</string>
     <string name="seleccionar_rol">Seleccionar rol</string>
+    <string name="google_maps_key">AIzaSyCB5mYdIJUxubgrVpZg_av2007NKOzES0o</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

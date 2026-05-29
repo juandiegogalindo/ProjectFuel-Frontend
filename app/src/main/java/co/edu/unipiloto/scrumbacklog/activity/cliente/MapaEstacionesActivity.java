@@ -220,7 +220,7 @@ public class MapaEstacionesActivity extends AppCompatActivity implements OnMapRe
                         + ","
                         + destino.longitude
                         + "&mode=driving"
-                        + "&key=AIzaSyDcOfSCP1ucmSqS4OZ5VKjxxrVbE5Vnt6o";
+                        + "&key=AIzaSyCB5mYdIJUxubgrVpZg_av2007NKOzES0o";
 
         RequestQueue queue =
                 Volley.newRequestQueue(this);
@@ -284,7 +284,7 @@ public class MapaEstacionesActivity extends AppCompatActivity implements OnMapRe
                                                         .addAll(lista)
                                                         .width(14)
                                                         .color(Color.BLUE)
-                                                        .geodesic(true)
+                                                        .geodesic(false)
                                         );
 
                             } catch (Exception e) {

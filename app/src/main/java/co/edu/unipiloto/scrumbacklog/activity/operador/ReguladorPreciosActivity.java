@@ -5,9 +5,11 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -16,15 +18,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Collections;
 import java.util.List;
 
 import co.edu.unipiloto.scrumbacklog.R;
 import co.edu.unipiloto.scrumbacklog.activity.logIn.LoginActivity;
+import co.edu.unipiloto.scrumbacklog.api.PrecioResponse;
 import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiClient;
 import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiService;
-import co.edu.unipiloto.scrumbacklog.api.PrecioResponse;
 import co.edu.unipiloto.scrumbacklog.model.Combustible;
-
+import co.edu.unipiloto.scrumbacklog.model.Ubicacion;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -153,30 +156,6 @@ public class ReguladorPreciosActivity
         } else {
 
             cargarCiudades();
-
-            spCiudad.setOnItemSelectedListener(
-                    new AdapterView.OnItemSelectedListener() {
-
-                        @Override
-                        public void onItemSelected(
-                                AdapterView<?> parent,
-                                android.view.View view,
-                                int position,
-                                long id) {
-
-                            String ciudad =
-                                    spCiudad
-                                            .getSelectedItem()
-                                            .toString();
-
-                            cargarZonas(ciudad);
-                        }
-
-                        @Override
-                        public void onNothingSelected(
-                                AdapterView<?> parent) {
-                        }
-                    });
         }
     }
 
@@ -186,17 +165,36 @@ public class ReguladorPreciosActivity
 
     private void configurarListeners() {
 
-        AdapterView.OnItemSelectedListener listener =
+        // ===================================
+        // CIUDAD
+        // ===================================
+
+        spCiudad.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
 
                     @Override
                     public void onItemSelected(
                             AdapterView<?> parent,
-                            android.view.View view,
+                            View view,
                             int position,
                             long id) {
 
+                        // SOLO ADMIN
+                        if (!rol.equalsIgnoreCase("OPERADOR")) {
+
+                            if (spCiudad.getSelectedItem() != null) {
+
+                                String ciudad =
+                                        spCiudad
+                                                .getSelectedItem()
+                                                .toString();
+
+                                cargarZonas(ciudad);
+                            }
+                        }
+
                         if (inicializado) {
+
                             mostrarPrecioActual();
                         }
                     }
@@ -205,13 +203,59 @@ public class ReguladorPreciosActivity
                     public void onNothingSelected(
                             AdapterView<?> parent) {
                     }
-                };
+                });
 
-        spCiudad.setOnItemSelectedListener(listener);
+        // ===================================
+        // ZONA
+        // ===================================
 
-        spLocalidad.setOnItemSelectedListener(listener);
+        spLocalidad.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
 
-        spCombustible.setOnItemSelectedListener(listener);
+                    @Override
+                    public void onItemSelected(
+                            AdapterView<?> parent,
+                            View view,
+                            int position,
+                            long id) {
+
+                        if (inicializado) {
+
+                            mostrarPrecioActual();
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(
+                            AdapterView<?> parent) {
+                    }
+                });
+
+        // ===================================
+        // COMBUSTIBLE
+        // ===================================
+
+        spCombustible.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+
+                    @Override
+                    public void onItemSelected(
+                            AdapterView<?> parent,
+                            View view,
+                            int position,
+                            long id) {
+
+                        if (inicializado) {
+
+                            mostrarPrecioActual();
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(
+                            AdapterView<?> parent) {
+                    }
+                });
     }
 
     // ===================================
@@ -284,6 +328,10 @@ public class ReguladorPreciosActivity
                                             response.body()
                                     );
 
+                            adapter.setDropDownViewResource(
+                                    android.R.layout.simple_spinner_dropdown_item
+                            );
+
                             spCiudad.setAdapter(adapter);
                         }
                     }
@@ -292,6 +340,12 @@ public class ReguladorPreciosActivity
                     public void onFailure(
                             Call<List<String>> call,
                             Throwable t) {
+
+                        Toast.makeText(
+                                ReguladorPreciosActivity.this,
+                                "Error cargando ciudades",
+                                Toast.LENGTH_SHORT
+                        ).show();
                     }
                 });
     }
@@ -320,6 +374,10 @@ public class ReguladorPreciosActivity
                                             response.body()
                                     );
 
+                            adapter.setDropDownViewResource(
+                                    android.R.layout.simple_spinner_dropdown_item
+                            );
+
                             spLocalidad.setAdapter(adapter);
                         }
                     }
@@ -328,41 +386,48 @@ public class ReguladorPreciosActivity
                     public void onFailure(
                             Call<List<String>> call,
                             Throwable t) {
+
+                        Toast.makeText(
+                                ReguladorPreciosActivity.this,
+                                "Error cargando zonas",
+                                Toast.LENGTH_SHORT
+                        ).show();
                     }
                 });
     }
 
     // ===================================
-// UBICACION OPERADOR
-// ===================================
+    // UBICACION OPERADOR
+    // ===================================
 
     private void cargarUbicacionOperador() {
 
         apiService.obtenerUbicaciones()
-                .enqueue(new Callback<List<co.edu.unipiloto.scrumbacklog.model.Ubicacion>>() {
+                .enqueue(new Callback<List<Ubicacion>>() {
 
                     @Override
                     public void onResponse(
-                            Call<List<co.edu.unipiloto.scrumbacklog.model.Ubicacion>> call,
-                            Response<List<co.edu.unipiloto.scrumbacklog.model.Ubicacion>> response) {
+                            Call<List<Ubicacion>> call,
+                            Response<List<Ubicacion>> response) {
 
                         if (response.isSuccessful()
                                 && response.body() != null) {
 
-                            for (co.edu.unipiloto.scrumbacklog.model.Ubicacion u
+                            for (Ubicacion u
                                     : response.body()) {
 
-                                if (u.getIdUbicacion() == idUbicacion) {
+                                if (u.getIdUbicacion()
+                                        == idUbicacion) {
 
-                                    // =========================
+                                    // ===================================
                                     // CIUDAD
-                                    // =========================
+                                    // ===================================
 
                                     ArrayAdapter<String> ciudadAdapter =
                                             new ArrayAdapter<>(
                                                     ReguladorPreciosActivity.this,
                                                     android.R.layout.simple_spinner_item,
-                                                    java.util.Collections.singletonList(
+                                                    Collections.singletonList(
                                                             u.getCiudad()
                                                     )
                                             );
@@ -373,15 +438,15 @@ public class ReguladorPreciosActivity
 
                                     spCiudad.setAdapter(ciudadAdapter);
 
-                                    // =========================
-                                    // ZONA
-                                    // =========================
+                                    // ===================================
+                                    // LOCALIDAD
+                                    // ===================================
 
                                     ArrayAdapter<String> zonaAdapter =
                                             new ArrayAdapter<>(
                                                     ReguladorPreciosActivity.this,
                                                     android.R.layout.simple_spinner_item,
-                                                    java.util.Collections.singletonList(
+                                                    Collections.singletonList(
                                                             u.getLocalidad()
                                                     )
                                             );
@@ -392,19 +457,21 @@ public class ReguladorPreciosActivity
 
                                     spLocalidad.setAdapter(zonaAdapter);
 
-                                    // =========================
-                                    // BLOQUEAR SPINNERS
-                                    // =========================
+                                    // ===================================
+                                    // DESHABILITAR Y PONER EN GRIS
+                                    // ===================================
 
                                     spCiudad.setEnabled(false);
                                     spCiudad.setClickable(false);
+                                    spCiudad.setAlpha(0.5f);
 
                                     spLocalidad.setEnabled(false);
                                     spLocalidad.setClickable(false);
+                                    spLocalidad.setAlpha(0.5f);
 
-                                    // =========================
-                                    // MOSTRAR PRECIO AUTOMATICO
-                                    // =========================
+                                    // ===================================
+                                    // MOSTRAR PRECIO
+                                    // ===================================
 
                                     if (spCombustible.getSelectedItem() != null) {
 
@@ -419,7 +486,7 @@ public class ReguladorPreciosActivity
 
                     @Override
                     public void onFailure(
-                            Call<List<co.edu.unipiloto.scrumbacklog.model.Ubicacion>> call,
+                            Call<List<Ubicacion>> call,
                             Throwable t) {
 
                         Toast.makeText(
@@ -444,6 +511,10 @@ public class ReguladorPreciosActivity
         Combustible combustible =
                 (Combustible)
                         spCombustible.getSelectedItem();
+
+        // ===================================
+        // OPERADOR
+        // ===================================
 
         if (rol.equalsIgnoreCase("OPERADOR")) {
 
@@ -480,7 +551,13 @@ public class ReguladorPreciosActivity
                 }
             });
 
-        } else {
+        }
+
+        // ===================================
+        // ADMIN
+        // ===================================
+
+        else {
 
             if (spCiudad.getSelectedItem() == null
                     || spLocalidad.getSelectedItem() == null) {
@@ -512,6 +589,12 @@ public class ReguladorPreciosActivity
                 public void onFailure(
                         Call<PrecioResponse> call,
                         Throwable t) {
+
+                    Toast.makeText(
+                            ReguladorPreciosActivity.this,
+                            "Error obteniendo precio",
+                            Toast.LENGTH_SHORT
+                    ).show();
                 }
             });
         }
@@ -553,6 +636,10 @@ public class ReguladorPreciosActivity
                 (Combustible)
                         spCombustible.getSelectedItem();
 
+        // ===================================
+        // OPERADOR
+        // ===================================
+
         if (rol.equalsIgnoreCase("OPERADOR")) {
 
             apiService.actualizarPrecioUbicacion(
@@ -590,8 +677,18 @@ public class ReguladorPreciosActivity
                     ).show();
                 }
             });
+        }
 
-        } else {
+        // ===================================
+        // ADMIN
+        // ===================================
+
+        else {
+
+            if (spCiudad.getSelectedItem() == null
+                    || spLocalidad.getSelectedItem() == null) {
+                return;
+            }
 
             apiService.actualizarPrecioZona(
                     combustible.getNombre(),

@@ -223,29 +223,39 @@ public class NotificadorActivity extends AppCompatActivity {
                 // CIUDAD FIJA
                 // =====================================
 
-                spCiudad.setAdapter(
+                ArrayAdapter<String> ciudadAdapter =
                         new ArrayAdapter<>(
                                 this,
-                                android.R.layout.simple_spinner_dropdown_item,
+                                android.R.layout.simple_spinner_item,
                                 Collections.singletonList(
                                         u.getCiudad()
                                 )
-                        )
+                        );
+
+                ciudadAdapter.setDropDownViewResource(
+                        android.R.layout.simple_spinner_dropdown_item
                 );
+
+                spCiudad.setAdapter(ciudadAdapter);
 
                 // =====================================
                 // ZONA FIJA
                 // =====================================
 
-                spZona.setAdapter(
+                ArrayAdapter<String> zonaAdapter =
                         new ArrayAdapter<>(
                                 this,
-                                android.R.layout.simple_spinner_dropdown_item,
+                                android.R.layout.simple_spinner_item,
                                 Collections.singletonList(
                                         u.getLocalidad()
                                 )
-                        )
+                        );
+
+                zonaAdapter.setDropDownViewResource(
+                        android.R.layout.simple_spinner_dropdown_item
                 );
+
+                spZona.setAdapter(zonaAdapter);
 
                 // =====================================
                 // BLOQUEAR SPINNERS
@@ -281,9 +291,13 @@ public class NotificadorActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(
                         this,
-                        android.R.layout.simple_spinner_dropdown_item,
+                        android.R.layout.simple_spinner_item,
                         ciudades
                 );
+
+        adapter.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item
+        );
 
         spCiudad.setAdapter(adapter);
 

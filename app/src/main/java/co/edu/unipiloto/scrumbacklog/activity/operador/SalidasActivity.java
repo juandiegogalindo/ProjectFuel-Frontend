@@ -18,15 +18,14 @@ import java.util.Locale;
 
 import co.edu.unipiloto.scrumbacklog.R;
 import co.edu.unipiloto.scrumbacklog.activity.logIn.LoginActivity;
-import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiClient;
-import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiService;
 import co.edu.unipiloto.scrumbacklog.api.InventarioResponse;
 import co.edu.unipiloto.scrumbacklog.api.MovimientoRequest;
 import co.edu.unipiloto.scrumbacklog.api.MovimientoResponse;
 import co.edu.unipiloto.scrumbacklog.api.PrecioResponse;
+import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiClient;
+import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiService;
 import co.edu.unipiloto.scrumbacklog.model.Combustible;
 import co.edu.unipiloto.scrumbacklog.model.Ubicacion;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -143,14 +142,18 @@ public class SalidasActivity extends AppCompatActivity {
         listHistorial.setAdapter(adapterHistorial);
 
         // =====================================
+        // CONFIGURAR ROL
+        // =====================================
+
+        configurarPorRol();
+
+        // =====================================
         // CARGAR DATOS
         // =====================================
 
         cargarCombustibles();
 
         cargarUbicaciones();
-
-        configurarPorRol();
 
         configurarListeners();
 
@@ -214,8 +217,8 @@ public class SalidasActivity extends AppCompatActivity {
     }
 
     // =====================================
-// UBICACIONES
-// =====================================
+    // UBICACIONES
+    // =====================================
 
     private void cargarUbicaciones() {
 
@@ -245,7 +248,9 @@ public class SalidasActivity extends AppCompatActivity {
                                     if (u.getIdUbicacion()
                                             == idUbicacion) {
 
+                                        // =====================================
                                         // CIUDAD
+                                        // =====================================
 
                                         ArrayAdapter<String> adapterCiudad =
                                                 new ArrayAdapter<>(
@@ -262,7 +267,15 @@ public class SalidasActivity extends AppCompatActivity {
 
                                         spCiudad.setAdapter(adapterCiudad);
 
+                                        spCiudad.setSelection(0);
+
+                                        spCiudad.setEnabled(false);
+
+                                        spCiudad.setAlpha(0.6f);
+
+                                        // =====================================
                                         // ZONA
+                                        // =====================================
 
                                         ArrayAdapter<String> adapterZona =
                                                 new ArrayAdapter<>(
@@ -279,17 +292,17 @@ public class SalidasActivity extends AppCompatActivity {
 
                                         spZona.setAdapter(adapterZona);
 
-                                        // BLOQUEAR SPINNERS
-
-                                        spCiudad.setEnabled(false);
+                                        spZona.setSelection(0);
 
                                         spZona.setEnabled(false);
+
+                                        spZona.setAlpha(0.6f);
+
+                                        actualizarInventarioUI();
 
                                         break;
                                     }
                                 }
-
-                                actualizarInventarioUI();
 
                                 return;
                             }
@@ -384,6 +397,9 @@ public class SalidasActivity extends AppCompatActivity {
                             int position,
                             long id) {
 
+                        if (rol.equalsIgnoreCase("OPERADOR"))
+                            return;
+
                         cargarZonas();
 
                         actualizarInventarioUI();
@@ -464,6 +480,10 @@ public class SalidasActivity extends AppCompatActivity {
                         android.R.layout.simple_spinner_item,
                         zonas
                 );
+
+        adapter.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item
+        );
 
         spZona.setAdapter(adapter);
     }

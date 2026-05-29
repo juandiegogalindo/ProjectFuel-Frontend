@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -13,30 +14,40 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-
 import com.google.android.gms.maps.SupportMapFragment;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import com.google.maps.android.PolyUtil;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import co.edu.unipiloto.scrumbacklog.R;
 import co.edu.unipiloto.scrumbacklog.activity.logIn.LoginActivity;
-
 import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiClient;
 import co.edu.unipiloto.scrumbacklog.api.apiconfiguracion.ApiService;
-
 import co.edu.unipiloto.scrumbacklog.model.Pedido;
 import co.edu.unipiloto.scrumbacklog.model.Ubicacion;
 
@@ -56,7 +67,11 @@ public class RutaDistribucionActivity
 
     private FusedLocationProviderClient fusedLocationClient;
 
-    private final List<LatLng> puntosRuta =
+    private LocationCallback locationCallback;
+
+    private LatLng ubicacionActual;
+
+    private final List<LatLng> puntosPedidos =
             new ArrayList<>();
 
     @Override
@@ -130,11 +145,16 @@ public class RutaDistribucionActivity
 
         activarUbicacion();
 
+        iniciarActualizacionesUbicacion();
+
         mMap.getUiSettings()
                 .setZoomControlsEnabled(true);
 
         mMap.getUiSettings()
                 .setCompassEnabled(true);
+
+        mMap.getUiSettings()
+                .setMapToolbarEnabled(true);
 
         cargarRutaDistribucion();
 
@@ -176,10 +196,67 @@ public class RutaDistribucionActivity
         }
 
         mMap.setMyLocationEnabled(true);
+
+        mMap.getUiSettings()
+                .setMyLocationButtonEnabled(true);
     }
 
     // =====================================================
-    // CARGAR RUTA
+    // ACTUALIZACIONES UBICACION
+    // =====================================================
+
+    private void iniciarActualizacionesUbicacion() {
+
+        LocationRequest locationRequest =
+                new LocationRequest.Builder(
+                        Priority.PRIORITY_HIGH_ACCURACY,
+                        5000
+                ).build();
+
+        locationCallback =
+                new LocationCallback() {
+
+                    @Override
+                    public void onLocationResult(
+                            @NonNull LocationResult locationResult
+                    ) {
+
+                        super.onLocationResult(locationResult);
+
+                        for (Location location
+                                : locationResult.getLocations()) {
+
+                            ubicacionActual =
+                                    new LatLng(
+                                            location.getLatitude(),
+                                            location.getLongitude()
+                                    );
+
+                            if (!puntosPedidos.isEmpty()) {
+
+                                generarRutaCompleta();
+                            }
+                        }
+                    }
+                };
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
+
+        fusedLocationClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                getMainLooper()
+        );
+    }
+
+    // =====================================================
+    // CARGAR PEDIDOS
     // =====================================================
 
     private void cargarRutaDistribucion() {
@@ -226,7 +303,7 @@ public class RutaDistribucionActivity
     }
 
     // =====================================================
-    // OBTENER UBICACIONES
+    // OBTENER UBICACIONES PEDIDOS
     // =====================================================
 
     private void obtenerUbicacionesPedidos(
@@ -247,6 +324,8 @@ public class RutaDistribucionActivity
 
                             List<Ubicacion> ubicaciones =
                                     response.body();
+
+                            puntosPedidos.clear();
 
                             for (Pedido pedido : pedidos) {
 
@@ -270,7 +349,7 @@ public class RutaDistribucionActivity
                                                         ubicacion.getLongitud()
                                                 );
 
-                                        puntosRuta.add(punto);
+                                        puntosPedidos.add(punto);
 
                                         mMap.addMarker(
 
@@ -298,7 +377,10 @@ public class RutaDistribucionActivity
                                 }
                             }
 
-                            dibujarRuta();
+                            if (ubicacionActual != null) {
+
+                                generarRutaCompleta();
+                            }
                         }
                     }
 
@@ -318,30 +400,141 @@ public class RutaDistribucionActivity
     }
 
     // =====================================================
-    // DIBUJAR RUTA
+    // GENERAR RUTA COMPLETA
     // =====================================================
 
-    private void dibujarRuta() {
+    private void generarRutaCompleta() {
 
-        if (puntosRuta.isEmpty()) {
+        if (ubicacionActual == null) {
 
             return;
         }
 
-        PolylineOptions polylineOptions =
-                new PolylineOptions()
-                        .addAll(puntosRuta)
-                        .width(12)
-                        .color(Color.BLUE)
-                        .geodesic(true);
+        if (puntosPedidos.isEmpty()) {
 
-        mMap.addPolyline(polylineOptions);
+            return;
+        }
 
-        Toast.makeText(
-                this,
-                "Ruta inteligente generada",
-                Toast.LENGTH_LONG
-        ).show();
+        LatLng origen = ubicacionActual;
+
+        for (LatLng destino : puntosPedidos) {
+
+            dibujarRuta(
+                    origen,
+                    destino
+            );
+
+            origen = destino;
+        }
+    }
+
+    // =====================================================
+    // DIBUJAR RUTA REAL
+    // =====================================================
+
+    private void dibujarRuta(
+            LatLng origen,
+            LatLng destino
+    ) {
+
+        String url =
+                "https://maps.googleapis.com/maps/api/directions/json?"
+                        + "origin="
+                        + origen.latitude
+                        + ","
+                        + origen.longitude
+                        + "&destination="
+                        + destino.latitude
+                        + ","
+                        + destino.longitude
+                        + "&mode=driving"
+                        + "&key="
+                        + getString(R.string.google_maps_key);
+
+        RequestQueue queue =
+                Volley.newRequestQueue(this);
+
+        JsonObjectRequest request =
+                new JsonObjectRequest(
+                        Request.Method.GET,
+                        url,
+                        null,
+
+                        response -> {
+
+                            try {
+
+                                String status =
+                                        response.getString(
+                                                "status"
+                                        );
+
+                                if (!status.equals("OK")) {
+
+                                    Toast.makeText(
+                                            this,
+                                            "Error ruta: " + status,
+                                            Toast.LENGTH_LONG
+                                    ).show();
+
+                                    return;
+                                }
+
+                                JSONArray routes =
+                                        response.getJSONArray(
+                                                "routes"
+                                        );
+
+                                JSONObject route =
+                                        routes.getJSONObject(0);
+
+                                JSONObject polyline =
+                                        route.getJSONObject(
+                                                "overview_polyline"
+                                        );
+
+                                String points =
+                                        polyline.getString(
+                                                "points"
+                                        );
+
+                                List<LatLng> lista =
+                                        PolyUtil.decode(points);
+
+                                mMap.addPolyline(
+
+                                        new PolylineOptions()
+                                                .addAll(lista)
+                                                .width(14)
+                                                .color(Color.BLUE)
+                                                .geodesic(false)
+                                );
+
+                            } catch (Exception e) {
+
+                                e.printStackTrace();
+
+                                Toast.makeText(
+                                        this,
+                                        "Error dibujando ruta",
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        },
+
+                        error -> {
+
+                            error.printStackTrace();
+
+                            Toast.makeText(
+                                    this,
+                                    "Error conexión Google Directions",
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        }
+                );
+
+        queue.add(request);
     }
 
     // =====================================================
@@ -369,7 +562,27 @@ public class RutaDistribucionActivity
                     == PackageManager.PERMISSION_GRANTED) {
 
                 activarUbicacion();
+
+                iniciarActualizacionesUbicacion();
             }
+        }
+    }
+
+    // =====================================================
+    // DESTROY
+    // =====================================================
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+
+        if (locationCallback != null) {
+
+            fusedLocationClient
+                    .removeLocationUpdates(
+                            locationCallback
+                    );
         }
     }
 

@@ -31,12 +31,16 @@ import co.edu.unipiloto.scrumbacklog.api.MovimientoResponse;
 import co.edu.unipiloto.scrumbacklog.model.Combustible;
 
 import co.edu.unipiloto.scrumbacklog.model.Pedido;
+import co.edu.unipiloto.scrumbacklog.model.Ubicacion;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class InventarioActivity extends AppCompatActivity {
 
+    private Spinner spCiudad,
+            spZona;
+    private List<Ubicacion> listaUbicaciones;
     Spinner spCombustible;
 
     EditText etCantidad;
@@ -78,6 +82,10 @@ public class InventarioActivity extends AppCompatActivity {
         rol = prefs.getString("rol", "");
         idUbicacion = prefs.getInt("id_ubicacion", -1);
 
+        spCiudad = findViewById(R.id.spCiudad);
+
+        spZona = findViewById(R.id.spZona);
+
         apiService =
                 ApiClient.getClient().create(ApiService.class);
 
@@ -103,6 +111,7 @@ public class InventarioActivity extends AppCompatActivity {
                 findViewById(R.id.listPedidosRecibidos);
 
         cargarCombustibles();
+        cargarUbicaciones();
 
         actualizarInventarioOperador();
 
@@ -151,6 +160,171 @@ public class InventarioActivity extends AppCompatActivity {
                         ).show();
                     }
                 });
+    }
+
+    private void cargarUbicaciones() {
+
+        apiService.obtenerUbicaciones()
+                .enqueue(new Callback<List<Ubicacion>>() {
+
+                    @Override
+                    public void onResponse(
+                            Call<List<Ubicacion>> call,
+                            Response<List<Ubicacion>> response
+                    ) {
+
+                        if (response.isSuccessful()
+                                && response.body() != null) {
+
+                            listaUbicaciones = response.body();
+
+                            // =====================================
+                            // OPERADOR
+                            // =====================================
+
+                            if (rol.equalsIgnoreCase("OPERADOR")) {
+
+                                for (Ubicacion u : listaUbicaciones) {
+
+                                    if (u.getIdUbicacion() == idUbicacion) {
+
+                                        ArrayAdapter<String> ciudadAdapter =
+                                                new ArrayAdapter<>(
+                                                        InventarioActivity.this,
+                                                        android.R.layout.simple_spinner_item,
+                                                        java.util.Collections.singletonList(
+                                                                u.getCiudad()
+                                                        )
+                                                );
+
+                                        ciudadAdapter.setDropDownViewResource(
+                                                android.R.layout.simple_spinner_dropdown_item
+                                        );
+
+                                        spCiudad.setAdapter(ciudadAdapter);
+
+                                        ArrayAdapter<String> zonaAdapter =
+                                                new ArrayAdapter<>(
+                                                        InventarioActivity.this,
+                                                        android.R.layout.simple_spinner_item,
+                                                        java.util.Collections.singletonList(
+                                                                u.getLocalidad()
+                                                        )
+                                                );
+
+                                        zonaAdapter.setDropDownViewResource(
+                                                android.R.layout.simple_spinner_dropdown_item
+                                        );
+
+                                        spZona.setAdapter(zonaAdapter);
+
+                                        spCiudad.setEnabled(false);
+                                        spZona.setEnabled(false);
+
+                                        break;
+                                    }
+                                }
+
+                                return;
+                            }
+
+                            // =====================================
+                            // ADMIN / DISTRIBUIDOR
+                            // =====================================
+
+                            java.util.ArrayList<String> ciudades =
+                                    new java.util.ArrayList<>();
+
+                            for (Ubicacion u : listaUbicaciones) {
+
+                                if (!ciudades.contains(u.getCiudad())) {
+
+                                    ciudades.add(u.getCiudad());
+                                }
+                            }
+
+                            ArrayAdapter<String> adapter =
+                                    new ArrayAdapter<>(
+                                            InventarioActivity.this,
+                                            android.R.layout.simple_spinner_item,
+                                            ciudades
+                                    );
+
+                            adapter.setDropDownViewResource(
+                                    android.R.layout.simple_spinner_dropdown_item
+                            );
+
+                            spCiudad.setAdapter(adapter);
+
+                            spCiudad.setOnItemSelectedListener(
+                                    new android.widget.AdapterView.OnItemSelectedListener() {
+
+                                        @Override
+                                        public void onItemSelected(
+                                                android.widget.AdapterView<?> parent,
+                                                android.view.View view,
+                                                int position,
+                                                long id
+                                        ) {
+
+                                            cargarZonas();
+                                        }
+
+                                        @Override
+                                        public void onNothingSelected(
+                                                android.widget.AdapterView<?> parent
+                                        ) {
+                                        }
+                                    });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(
+                            Call<List<Ubicacion>> call,
+                            Throwable t
+                    ) {
+
+                        Toast.makeText(
+                                InventarioActivity.this,
+                                "Error cargando ubicaciones",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                });
+    }
+
+    private void cargarZonas() {
+
+        if (spCiudad.getSelectedItem() == null)
+            return;
+
+        String ciudad =
+                spCiudad.getSelectedItem().toString();
+
+        java.util.ArrayList<String> zonas =
+                new java.util.ArrayList<>();
+
+        for (Ubicacion u : listaUbicaciones) {
+
+            if (u.getCiudad().equalsIgnoreCase(ciudad)) {
+
+                zonas.add(u.getLocalidad());
+            }
+        }
+
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<>(
+                        this,
+                        android.R.layout.simple_spinner_item,
+                        zonas
+                );
+
+        adapter.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item
+        );
+
+        spZona.setAdapter(adapter);
     }
 
     // =====================================================
