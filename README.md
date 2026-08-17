@@ -1,174 +1,174 @@
 # ProjectFuel Frontend
 
-Native Android client for **ProjectFuel**, a fuel distribution network management platform built for a Universidad Piloto de Colombia software project. The app provides three role-based experiences — customer, station operator, and distributor — over a single codebase, consuming the [ProjectFuel Backend](https://github.com/juandiegogalindo/ProjectFuel-Backend) REST API.
+Cliente Android nativo de **ProjectFuel**, una plataforma de gestión de una red de distribución de combustible desarrollada como proyecto de software para la Universidad Piloto de Colombia. La aplicación ofrece tres experiencias basadas en roles —cliente, operador de estación y distribuidor— sobre una única base de código, consumiendo la API REST de [ProjectFuel Backend](https://github.com/juandiegogalindo/ProjectFuel-Backend).
 
 ![Java](https://img.shields.io/badge/Java-11-orange)
 ![Android](https://img.shields.io/badge/Android-API%2023--36-3DDC84)
 ![Gradle](https://img.shields.io/badge/Gradle-9.2.1-02303A)
 ![Retrofit](https://img.shields.io/badge/Retrofit-2.11.0-informational)
 ![Google Maps](https://img.shields.io/badge/Google%20Maps-SDK-4285F4)
-![License](https://img.shields.io/badge/license-MIT-green)
+![License](https://img.shields.io/badge/licencia-MIT-green)
 
-## Table of Contents
+## Tabla de Contenidos
 
-- [Overview](#overview)
-- [Roles and Features](#roles-and-features)
-- [Architecture](#architecture)
-- [Technology Stack](#technology-stack)
-- [Screen Inventory](#screen-inventory)
-- [API Integration](#api-integration)
-- [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
-- [Configuration](#configuration)
-- [Project Structure](#project-structure)
-- [Testing](#testing)
-- [Known Limitations](#known-limitations)
+- [Descripción General](#descripción-general)
+- [Roles y Funcionalidades](#roles-y-funcionalidades)
+- [Arquitectura](#arquitectura)
+- [Stack Tecnológico](#stack-tecnológico)
+- [Inventario de Pantallas](#inventario-de-pantallas)
+- [Integración con la API](#integración-con-la-api)
+- [Prerrequisitos](#prerrequisitos)
+- [Instalación y Puesta en Marcha](#instalación-y-puesta-en-marcha)
+- [Configuración](#configuración)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Pruebas](#pruebas)
+- [Limitaciones Conocidas](#limitaciones-conocidas)
 - [Roadmap](#roadmap)
-- [Contributing](#contributing)
-- [License](#license)
-- [Author](#author)
+- [Contribuciones](#contribuciones)
+- [Licencia](#licencia)
+- [Autor](#autor)
 
-## Overview
+## Descripción General
 
-ProjectFuel Frontend is the mobile face of a fuel supply-chain system: it lets customers find and price fuel, lets station operators run day-to-day inventory and pricing, and lets distributors manage delivery orders and routes. The internal package and app name (`co.edu.unipiloto.scrumbacklog`, `ScrumBacklog`) reflect its origin as a Scrum-based academic project; the domain logic itself is entirely fuel-distribution oriented.
+ProjectFuel Frontend es la cara móvil de un sistema de cadena de suministro de combustible: permite a los clientes buscar y consultar precios de combustible, a los operadores de estación gestionar el día a día de inventario y precios, y a los distribuidores administrar pedidos de entrega y rutas. El paquete y el nombre internos de la app (`co.edu.unipiloto.scrumbacklog`, `ScrumBacklog`) reflejan su origen como proyecto académico basado en Scrum; la lógica de dominio, en cambio, está completamente orientada a la distribución de combustible.
 
-The app does not ship separate builds per role. Instead, `MainActivity` reads the role returned by the backend at login and shows or hides each feature button accordingly, so the same APK serves customers, operators, and distributors.
+La aplicación no se distribuye en builds separados por rol. En su lugar, `MainActivity` lee el rol devuelto por el backend al iniciar sesión y muestra u oculta cada funcionalidad según corresponda, de modo que un mismo APK sirve tanto a clientes como a operadores y distribuidores.
 
-## Roles and Features
+## Roles y Funcionalidades
 
-| Role | Capabilities |
+| Rol | Capacidades |
 |---|---|
-| **Cliente** (customer) | Query fuel prices by city/zone (`ConsultaActivity`), check station opening hours (`HorariosActivity`), locate stations on a live map with turn-by-turn route drawing (`MapaEstacionesActivity`), validate subsidy codes (`SubsidioActivity`) |
-| **Operador** (station operator) | Register inventory entries and exits (`InventarioActivity`, `SalidasActivity`), receive incoming fuel shipments (`RecepcionCombustibleActivity`), adjust prices by location or zone (`ReguladorPreciosActivity`), schedule new orders (`ProgramarPedidoActivity`), review cancelled orders (`PedidosCanceladosActivity`), check operational history (`HistorialOperadorActivity`), get low-inventory alerts (`NotificadorActivity`) |
-| **Distribuidor** (distributor) | Manage distribution inventory (`ControlInventarioActivity`), review pending and to-be-delivered orders (`PedidosPendientesActivity`, `PedidosAEntregarActivity`), track a live delivery route on the map (`RutaDistribucionActivity`), consult delivery history (`HistoricoDistribuidorActivity`), view aggregate order metrics — pending, accepted, delivered, cancelled, total gallons — on a dashboard (`DashboardDistribuidorActivity`) |
-| **Admin** | Subset of operator screens (station consultation, inventory, alerts, and inventory control) |
+| **Cliente** | Consultar precios de combustible por ciudad/zona (`ConsultaActivity`), revisar horarios de atención de estaciones (`HorariosActivity`), ubicar estaciones en un mapa con trazado de ruta en tiempo real (`MapaEstacionesActivity`), validar códigos de subsidio (`SubsidioActivity`) |
+| **Operador** (estación de servicio) | Registrar entradas y salidas de inventario (`InventarioActivity`, `SalidasActivity`), recibir despachos de combustible entrantes (`RecepcionCombustibleActivity`), ajustar precios por ubicación o zona (`ReguladorPreciosActivity`), programar nuevos pedidos (`ProgramarPedidoActivity`), revisar pedidos cancelados (`PedidosCanceladosActivity`), consultar el historial operativo (`HistorialOperadorActivity`), recibir alertas de inventario bajo (`NotificadorActivity`) |
+| **Distribuidor** | Gestionar el inventario de distribución (`ControlInventarioActivity`), revisar pedidos pendientes y por entregar (`PedidosPendientesActivity`, `PedidosAEntregarActivity`), rastrear una ruta de entrega en vivo sobre el mapa (`RutaDistribucionActivity`), consultar el historial de entregas (`HistoricoDistribuidorActivity`), visualizar métricas agregadas de pedidos —pendientes, aceptados, entregados, cancelados, galones totales— en un dashboard (`DashboardDistribuidorActivity`) |
+| **Admin** | Subconjunto de pantallas de operador (consulta de estaciones, inventario, alertas y control de inventario) |
 
-Every screen (except login/register) shares a common `Toolbar` with an info action and a logout action that clears the local session and returns to the login screen.
+Todas las pantallas (excepto login/registro) comparten un `Toolbar` común con una acción de información y una acción de cierre de sesión que limpia la sesión local y regresa a la pantalla de login.
 
-## Architecture
+## Arquitectura
 
-The app follows a straightforward **Activity-per-screen** structure with no ViewModel/Repository layer: each `Activity` owns its views, calls `ApiService` directly through Retrofit, and updates the UI from the callback. List-based screens use `BaseAdapter` implementations (e.g. `HistoricoAdapter`, `PedidoAdapter`, `MovimientoAdapter`) bound to `ListView`, not `RecyclerView`.
+La aplicación sigue una estructura simple de **una Activity por pantalla**, sin capa de ViewModel/Repository: cada `Activity` gestiona directamente sus propias vistas, invoca `ApiService` a través de Retrofit y actualiza la interfaz desde el callback de la respuesta. Las pantallas con listas usan implementaciones de `BaseAdapter` (por ejemplo `HistoricoAdapter`, `PedidoAdapter`, `MovimientoAdapter`) enlazadas a `ListView`, no a `RecyclerView`.
 
 ```mermaid
 flowchart TD
-    A[LoginScreenActivity] -->|Login| B[LoginActivity]
-    A -->|Register| C[RegisterActivity]
+    A[LoginScreenActivity] -->|Iniciar sesión| B[LoginActivity]
+    A -->|Registrarse| C[RegisterActivity]
     B -->|POST usuarios/login| D[(ProjectFuel Backend)]
-    D -->|role, id_ubicacion| E[SharedPreferences: sesion]
+    D -->|rol, id_ubicacion| E[SharedPreferences: sesion]
     E --> F[MainActivity]
-    F -->|role = cliente| G[Cliente screens]
-    F -->|role = operador / admin| H[Operador screens]
-    F -->|role = distribuidor| I[Distribuidor screens]
-    G & H & I -->|Retrofit calls| D
+    F -->|rol = cliente| G[Pantallas Cliente]
+    F -->|rol = operador / admin| H[Pantallas Operador]
+    F -->|rol = distribuidor| I[Pantallas Distribuidor]
+    G & H & I -->|Llamadas Retrofit| D
 ```
 
-Two screens (`MapaEstacionesActivity`, `RutaDistribucionActivity`) additionally combine `FusedLocationProviderClient` for live GPS tracking with the Google Maps Directions API, decoding the returned polyline with Android Maps Utils to draw routes on the map.
+Dos pantallas (`MapaEstacionesActivity`, `RutaDistribucionActivity`) combinan además `FusedLocationProviderClient` para el rastreo GPS en vivo con la API de Directions de Google Maps, decodificando la polyline recibida con Android Maps Utils para dibujar rutas sobre el mapa.
 
-## Technology Stack
+## Stack Tecnológico
 
-| Category | Technology |
+| Categoría | Tecnología |
 |---|---|
-| Language | Java 11 |
-| Platform | Android, `minSdk` 23, `targetSdk`/`compileSdk` 36 |
-| Build | Gradle 9.2.1 (Groovy DSL) with a version catalog (`libs.versions.toml`); Gradle daemon JVM toolchain pinned to JDK 21 |
-| Networking | Retrofit 2.11.0 + Gson converter, OkHttp logging interceptor |
-| Maps & location | Google Maps SDK for Android, Google Play Services Location, Google Maps Directions API (via Volley), Android Maps Utils |
+| Lenguaje | Java 11 |
+| Plataforma | Android, `minSdk` 23, `targetSdk`/`compileSdk` 36 |
+| Build | Gradle 9.2.1 (Groovy DSL) con catálogo de versiones (`libs.versions.toml`); toolchain del daemon de Gradle fijado a JDK 21 |
+| Networking | Retrofit 2.11.0 + convertidor Gson, interceptor de logging de OkHttp |
+| Mapas y ubicación | Google Maps SDK for Android, Google Play Services Location, API de Directions de Google Maps (vía Volley), Android Maps Utils |
 | UI | AndroidX AppCompat, Material Components, ConstraintLayout, View Binding |
-| Local persistence | `SharedPreferences` (session: user id, role, station id) |
-| Testing | JUnit 4, AndroidX Test, Espresso (default scaffolding only) |
+| Persistencia local | `SharedPreferences` (sesión: id de usuario, rol, id de estación) |
+| Pruebas | JUnit 4, AndroidX Test, Espresso (solo scaffolding por defecto) |
 
-## Screen Inventory
+## Inventario de Pantallas
 
 <details>
-<summary>Full list of 21 Activities</summary>
+<summary>Listado completo de las 21 Activities</summary>
 
-| Package | Activity | Purpose |
+| Paquete | Activity | Propósito |
 |---|---|---|
-| `logIn` | `LoginScreenActivity` | App entry point / launcher activity |
-| `logIn` | `LoginActivity` | Authenticates and stores session data |
-| `logIn` | `RegisterActivity` | Customer self-registration |
-| — | `MainActivity` | Role-based navigation hub |
-| `cliente` | `ConsultaActivity` | Fuel price lookup by location/zone |
-| `cliente` | `HorariosActivity` | Station opening hours |
-| `cliente` | `MapaEstacionesActivity` | Station map + route to selected station |
-| `cliente` | `SubsidioActivity` | Subsidy code validation |
-| `operador` | `InventarioActivity` | Register inventory entries |
-| `operador` | `SalidasActivity` | Register inventory exits |
-| `operador` | `RecepcionCombustibleActivity` | Receive scheduled fuel shipments |
-| `operador` | `ReguladorPreciosActivity` | Adjust prices by location/zone |
-| `operador` | `ProgramarPedidoActivity` | Schedule a new order |
-| `operador` | `PedidosCanceladosActivity` | Review cancelled orders |
-| `operador` | `HistorialOperadorActivity` | Operational movement history |
-| `operador` | `NotificadorActivity` | Low-inventory alert check |
-| `distribuidor` | `ControlInventarioActivity` | Distribution inventory control |
-| `distribuidor` | `PedidosPendientesActivity` | Pending orders queue |
-| `distribuidor` | `PedidosAEntregarActivity` | Orders ready for delivery |
-| `distribuidor` | `RutaDistribucionActivity` | Live delivery route tracking |
-| `distribuidor` | `HistoricoDistribuidorActivity` | Delivery history |
-| `distribuidor` | `DashboardDistribuidorActivity` | Order metrics dashboard |
+| `logIn` | `LoginScreenActivity` | Punto de entrada de la app / launcher activity |
+| `logIn` | `LoginActivity` | Autentica y almacena los datos de sesión |
+| `logIn` | `RegisterActivity` | Auto-registro de clientes |
+| — | `MainActivity` | Centro de navegación basado en rol |
+| `cliente` | `ConsultaActivity` | Consulta de precios de combustible por ubicación/zona |
+| `cliente` | `HorariosActivity` | Horarios de atención de estaciones |
+| `cliente` | `MapaEstacionesActivity` | Mapa de estaciones + ruta hacia la estación seleccionada |
+| `cliente` | `SubsidioActivity` | Validación de códigos de subsidio |
+| `operador` | `InventarioActivity` | Registro de entradas de inventario |
+| `operador` | `SalidasActivity` | Registro de salidas de inventario |
+| `operador` | `RecepcionCombustibleActivity` | Recepción de despachos de combustible programados |
+| `operador` | `ReguladorPreciosActivity` | Ajuste de precios por ubicación/zona |
+| `operador` | `ProgramarPedidoActivity` | Programación de un nuevo pedido |
+| `operador` | `PedidosCanceladosActivity` | Revisión de pedidos cancelados |
+| `operador` | `HistorialOperadorActivity` | Historial de movimientos operativos |
+| `operador` | `NotificadorActivity` | Verificación de alertas de inventario bajo |
+| `distribuidor` | `ControlInventarioActivity` | Control de inventario de distribución |
+| `distribuidor` | `PedidosPendientesActivity` | Cola de pedidos pendientes |
+| `distribuidor` | `PedidosAEntregarActivity` | Pedidos listos para entrega |
+| `distribuidor` | `RutaDistribucionActivity` | Rastreo de ruta de entrega en vivo |
+| `distribuidor` | `HistoricoDistribuidorActivity` | Historial de entregas |
+| `distribuidor` | `DashboardDistribuidorActivity` | Dashboard de métricas de pedidos |
 
 </details>
 
-## API Integration
+## Integración con la API
 
-All backend communication goes through the `ApiService` Retrofit interface. Main endpoint groups consumed:
+Toda la comunicación con el backend se realiza a través de la interfaz Retrofit `ApiService`. Principales grupos de endpoints consumidos:
 
-| Domain | Endpoints |
+| Dominio | Endpoints |
 |---|---|
-| Auth | `POST /usuarios/login`, `POST /usuarios/registro` |
-| Locations | `GET /ubicaciones`, `GET /ubicaciones/ciudades`, `GET /ubicaciones/zonas/{ciudad}` |
-| Prices | `GET/PUT /precios/ubicacion`, `GET/PUT /precios/zona` |
-| Inventory | `GET /inventarios/ubicacion/{idUbicacion}` |
-| Movements | `POST /movimientos/entrada`, `POST /movimientos/salida`, `GET /movimientos/ubicacion/{idUbicacion}` |
-| Orders | `POST /pedidos`, `GET /pedidos`, `GET /pedidos/pendientes(/{idUbicacion})`, `GET /pedidos/aceptados`, `GET /pedidos/cancelados`, `GET /pedidos/entregados/{idUbicacion}`, `PUT /pedidos/{id}/aceptar`, `PUT /pedidos/{id}/cancelar`, `PUT /pedidos/{id}/recibir`, `PUT /pedidos/{id}/entregar`, `GET /pedidos/dashboard/distribuidor` |
-| Fuels | `GET /combustibles` |
-| Subsidies | `POST /subsidios/validar` |
+| Autenticación | `POST /usuarios/login`, `POST /usuarios/registro` |
+| Ubicaciones | `GET /ubicaciones`, `GET /ubicaciones/ciudades`, `GET /ubicaciones/zonas/{ciudad}` |
+| Precios | `GET/PUT /precios/ubicacion`, `GET/PUT /precios/zona` |
+| Inventario | `GET /inventarios/ubicacion/{idUbicacion}` |
+| Movimientos | `POST /movimientos/entrada`, `POST /movimientos/salida`, `GET /movimientos/ubicacion/{idUbicacion}` |
+| Pedidos | `POST /pedidos`, `GET /pedidos`, `GET /pedidos/pendientes(/{idUbicacion})`, `GET /pedidos/aceptados`, `GET /pedidos/cancelados`, `GET /pedidos/entregados/{idUbicacion}`, `PUT /pedidos/{id}/aceptar`, `PUT /pedidos/{id}/cancelar`, `PUT /pedidos/{id}/recibir`, `PUT /pedidos/{id}/entregar`, `GET /pedidos/dashboard/distribuidor` |
+| Combustibles | `GET /combustibles` |
+| Subsidios | `POST /subsidios/validar` |
 
-The Directions endpoint used to draw driving routes (`maps.googleapis.com/maps/api/directions/json`) is called separately via Volley, outside the `ApiService`/Retrofit stack.
+El endpoint de Directions usado para trazar rutas de conducción (`maps.googleapis.com/maps/api/directions/json`) se invoca por separado con Volley, fuera del stack de `ApiService`/Retrofit.
 
-## Prerequisites
+## Prerrequisitos
 
-- Android Studio (Ladybug or newer, to match AGP 9.0.1 / compileSdk 36)
-- JDK 21 (Gradle daemon toolchain) — JDK 11 is used only as Java source/target compatibility for the app module
-- An Android emulator or physical device, API level 23+
-- A running instance of [ProjectFuel Backend](https://github.com/juandiegogalindo/ProjectFuel-Backend) reachable from the device/emulator network
-- A Google Maps API key with **Maps SDK for Android** and **Directions API** enabled
+- Android Studio (Ladybug o superior, compatible con AGP 9.0.1 / compileSdk 36)
+- JDK 21 (toolchain del daemon de Gradle) — JDK 11 se usa únicamente como compatibilidad de código fuente/target del módulo de la app
+- Un emulador de Android o dispositivo físico, API nivel 23 o superior
+- Una instancia en ejecución de [ProjectFuel Backend](https://github.com/juandiegogalindo/ProjectFuel-Backend) accesible desde la red del dispositivo/emulador
+- Una clave de API de Google Maps con **Maps SDK for Android** y **Directions API** habilitadas
 
-## Getting Started
+## Instalación y Puesta en Marcha
 
 ```bash
 git clone https://github.com/juandiegogalindo/ProjectFuel-Frontend.git
 cd ProjectFuel-Frontend
 ```
 
-Open the project in Android Studio and let Gradle sync, or build from the command line:
+Abrir el proyecto en Android Studio y dejar que Gradle sincronice, o compilar desde la línea de comandos:
 
 ```bash
 ./gradlew assembleDebug
 ```
 
-Install on a connected device/emulator:
+Instalar en un dispositivo/emulador conectado:
 
 ```bash
 ./gradlew installDebug
 ```
 
-## Configuration
+## Configuración
 
-Two values must be adjusted before the app is usable against your own environment:
+Antes de usar la app contra tu propio entorno, hay que ajustar dos valores:
 
-**1. Backend base URL**, hardcoded in `ApiClient.java`:
+**1. URL base del backend**, definida de forma fija en `ApiClient.java`:
 
 ```java
 // app/src/main/java/co/edu/unipiloto/scrumbacklog/api/apiconfiguracion/ApiClient.java
 private static final String BASE_URL = "http://192.168.2.10:8080/";
 ```
 
-Point it to wherever your backend instance runs. For an emulator reaching a backend on the same host machine, `10.0.2.2` is the conventional loopback address instead of `localhost`.
+Debe apuntarse a donde esté corriendo tu instancia del backend. Para un emulador que se conecta a un backend en la misma máquina anfitriona, `10.0.2.2` es la dirección de loopback convencional en lugar de `localhost`.
 
-**2. Google Maps API key**, currently duplicated in three places — `res/values/strings.xml`, `AndroidManifest.xml`, and a literal string inside `MapaEstacionesActivity.java`'s Directions request URL. Replace all three with your own key (see [Known Limitations](#known-limitations) for why this should not stay hardcoded).
+**2. Clave de API de Google Maps**, actualmente duplicada en tres lugares: `res/values/strings.xml`, `AndroidManifest.xml`, y un string literal dentro de la URL de la petición Directions en `MapaEstacionesActivity.java`. Se debe reemplazar en los tres sitios por una clave propia (ver [Limitaciones Conocidas](#limitaciones-conocidas) para entender por qué no debería quedar fija en el código).
 
-## Project Structure
+## Estructura del Proyecto
 
 ```
 ProjectFuel-Frontend/
@@ -183,68 +183,68 @@ ProjectFuel-Frontend/
 │   │   │   ├── distribuidor/   # ControlInventario, DashboardDistribuidor,
 │   │   │   │                   # PedidosPendientes/AEntregar, RutaDistribucion,
 │   │   │   │                   # Historico (+ adapters)
-│   │   │   └── MainActivity.java   # Role-based navigation hub
+│   │   │   └── MainActivity.java   # Centro de navegación basado en rol
 │   │   ├── api/
-│   │   │   ├── apiconfiguracion/   # ApiClient (Retrofit setup), ApiService (endpoints)
+│   │   │   ├── apiconfiguracion/   # ApiClient (configuración Retrofit), ApiService (endpoints)
 │   │   │   ├── login/               # LoginRequest/Response, RegisterRequest
-│   │   │   └── *.java               # Request/Response DTOs (Pedido, Movimiento, Subsidio, ...)
-│   │   ├── model/               # Domain models: Usuario, Ubicacion, Pedido, Inventario, ...
-│   │   └── Spinner/              # SimpleItemSelected listener helper
-│   ├── src/test/                # Unit test scaffolding (JUnit)
-│   ├── src/androidTest/         # Instrumented test scaffolding (Espresso)
+│   │   │   └── *.java               # DTOs de Request/Response (Pedido, Movimiento, Subsidio, ...)
+│   │   ├── model/               # Modelos de dominio: Usuario, Ubicacion, Pedido, Inventario, ...
+│   │   └── Spinner/              # Listener auxiliar SimpleItemSelected
+│   ├── src/test/                # Scaffolding de pruebas unitarias (JUnit)
+│   ├── src/androidTest/         # Scaffolding de pruebas instrumentadas (Espresso)
 │   └── src/main/res/
-│       ├── layout/               # 21 activity layouts + 8 list-item layouts
-│       ├── navigation/           # Unused leftover nav_graph (see Known Limitations)
+│       ├── layout/               # 21 layouts de Activity + 8 layouts de ítem de lista
+│       ├── navigation/           # nav_graph residual sin uso (ver Limitaciones Conocidas)
 │       ├── values/               # strings, colors, themes
-│       └── xml/                  # network_security_config, backup/data extraction rules
-├── gradle/                      # Version catalog and wrapper (Gradle 9.2.1)
+│       └── xml/                  # network_security_config, reglas de backup/data extraction
+├── gradle/                      # Catálogo de versiones y wrapper (Gradle 9.2.1)
 └── build.gradle / settings.gradle
 ```
 
-## Testing
+## Pruebas
 
-`src/test` and `src/androidTest` currently contain only the default Android Studio example tests (`ExampleUnitTest`, `ExampleInstrumentedTest`) generated when the project was created. Run them with:
+`src/test` y `src/androidTest` actualmente solo contienen las pruebas de ejemplo por defecto de Android Studio (`ExampleUnitTest`, `ExampleInstrumentedTest`) generadas al crear el proyecto. Se ejecutan con:
 
 ```bash
-./gradlew test              # JVM unit tests
-./gradlew connectedAndroidTest   # Instrumented tests, requires a connected device/emulator
+./gradlew test              # Pruebas unitarias JVM
+./gradlew connectedAndroidTest   # Pruebas instrumentadas, requieren un dispositivo/emulador conectado
 ```
 
-No project-specific test currently exercises login, role-based navigation, or API integration — see [Known Limitations](#known-limitations).
+Actualmente ninguna prueba propia del proyecto cubre el login, la navegación basada en rol o la integración con la API — ver [Limitaciones Conocidas](#limitaciones-conocidas).
 
-## Known Limitations
+## Limitaciones Conocidas
 
-Documented here for transparency, based on direct code review:
+Documentadas aquí por transparencia, a partir de la revisión directa del código:
 
-- **Hardcoded secrets:** the Google Maps API key is committed in plain text in three separate places (`strings.xml`, `AndroidManifest.xml`, and inline in `MapaEstacionesActivity.java`). It should live in a non-committed `local.properties`/`BuildConfig` field and be restricted by key constraints in Google Cloud Console.
-- **Non-portable backend URL:** `ApiClient.BASE_URL` points to a fixed local IP (`192.168.2.10`), so the app only reaches a backend out of the box on the original developer's LAN. This should move to a build-variant config or a runtime setting.
-- **Cleartext HTTP:** the backend is called over `http://`, enabled by a permissive `network_security_config.xml` (`cleartextTrafficPermitted="true"`). Acceptable for local development, not for a real deployment.
-- **No token-based session security:** authentication state is a plain `SharedPreferences` entry (`rol`, `id_usuario`, `id_ubicacion`) with no session token, expiration, or server-side re-validation — a locally modified value could escalate role-based UI access, and the backend has no way to reject a stale or tampered client claim.
-- **Dead navigation scaffolding:** `res/navigation/nav_graph.xml` still references a `FirstFragment`/`SecondFragment` pair (and matching `fragment_first`/`fragment_second` layouts) from the default Android Studio "Fragment + Navigation" template. Neither fragment class exists in the source tree — the graph, its strings (`first_fragment_label`, `second_fragment_label`, `next`, `previous`) and the `lorem_ipsum` placeholder string are unused leftovers from project bootstrapping and can be deleted along with the `navigation-fragment`/`navigation-ui` dependencies in `app/build.gradle`, since no screen in the app actually uses the Navigation component.
-- **List rendering via `BaseAdapter`/`ListView`:** all list-backed screens (order history, movements, pending orders, etc.) use classic `BaseAdapter` + `ListView` rather than `RecyclerView`, which is the current Android recommendation for view recycling performance and animation support.
-- **Mixed networking stacks:** most calls go through Retrofit, but the Directions API integration in `MapaEstacionesActivity` and `RutaDistribucionActivity` uses Volley directly, adding a second HTTP client to the dependency graph for a single use case.
-- **Minimal automated testing:** see [Testing](#testing).
-- **Leftover project identity:** the app name (`ScrumBacklog`) and Java package (`co.edu.unipiloto.scrumbacklog`) still reflect the project's original working title rather than "ProjectFuel," which can be confusing for anyone browsing the source for the first time.
+- **Credenciales fijas en el código:** la clave de API de Google Maps está comprometida en texto plano en tres lugares distintos (`strings.xml`, `AndroidManifest.xml`, y en línea dentro de `MapaEstacionesActivity.java`). Debería vivir en un campo `local.properties`/`BuildConfig` no versionado y estar restringida por límites de uso en Google Cloud Console.
+- **URL de backend no portable:** `ApiClient.BASE_URL` apunta a una IP local fija (`192.168.2.10`), por lo que la app solo alcanza un backend de forma inmediata en la red LAN del desarrollador original. Debería moverse a una configuración por variante de build o a un ajuste en tiempo de ejecución.
+- **HTTP en texto plano:** el backend se invoca por `http://`, habilitado por un `network_security_config.xml` permisivo (`cleartextTrafficPermitted="true"`). Aceptable para desarrollo local, no para un despliegue real.
+- **Sin seguridad de sesión basada en token:** el estado de autenticación es una entrada plana de `SharedPreferences` (`rol`, `id_usuario`, `id_ubicacion`) sin token de sesión, expiración, ni revalidación del lado del servidor — un valor modificado localmente podría escalar el acceso a la interfaz según el rol, y el backend no tiene forma de rechazar una afirmación de cliente obsoleta o manipulada.
+- **Scaffolding de navegación sin uso:** `res/navigation/nav_graph.xml` todavía referencia un par `FirstFragment`/`SecondFragment` (y sus layouts `fragment_first`/`fragment_second`) de la plantilla por defecto de Android Studio "Fragment + Navigation". Ninguna de las dos clases de fragment existe en el árbol de código fuente — el grafo, sus strings (`first_fragment_label`, `second_fragment_label`, `next`, `previous`) y el string de relleno `lorem_ipsum` son residuos sin uso del arranque del proyecto y pueden eliminarse junto con las dependencias `navigation-fragment`/`navigation-ui` en `app/build.gradle`, ya que ninguna pantalla de la app usa realmente el Navigation Component.
+- **Renderizado de listas con `BaseAdapter`/`ListView`:** todas las pantallas con listas (historial de pedidos, movimientos, pedidos pendientes, etc.) usan el clásico `BaseAdapter` + `ListView` en lugar de `RecyclerView`, que es la recomendación actual de Android para el rendimiento del reciclaje de vistas y el soporte de animaciones.
+- **Mezcla de stacks de red:** la mayoría de las llamadas pasan por Retrofit, pero la integración con la API de Directions en `MapaEstacionesActivity` y `RutaDistribucionActivity` usa Volley directamente, añadiendo un segundo cliente HTTP al grafo de dependencias para un único caso de uso.
+- **Pruebas automatizadas mínimas:** ver [Pruebas](#pruebas).
+- **Identidad de proyecto residual:** el nombre de la app (`ScrumBacklog`) y el paquete Java (`co.edu.unipiloto.scrumbacklog`) siguen reflejando el título de trabajo original del proyecto en lugar de "ProjectFuel", lo cual puede resultar confuso para quien explore el código fuente por primera vez.
 
 ## Roadmap
 
-- [ ] Externalize `BASE_URL` and the Google Maps API key via `BuildConfig`/`local.properties`
-- [ ] Add JWT-based session handling with token expiration
-- [ ] Remove the unused `nav_graph.xml`, its fragments, and the Navigation component dependencies
-- [ ] Migrate `ListView`/`BaseAdapter` screens to `RecyclerView`
-- [ ] Migrate the Directions API calls to Retrofit for a single networking stack
-- [ ] Add unit tests for API DTOs and instrumented tests for role-based navigation
-- [ ] Enforce HTTPS and remove the cleartext network security exception
+- [ ] Externalizar `BASE_URL` y la clave de API de Google Maps mediante `BuildConfig`/`local.properties`
+- [ ] Añadir manejo de sesión basado en JWT con expiración de token
+- [ ] Eliminar el `nav_graph.xml` sin uso, sus fragments y las dependencias del Navigation Component
+- [ ] Migrar las pantallas con `ListView`/`BaseAdapter` a `RecyclerView`
+- [ ] Migrar las llamadas a la API de Directions a Retrofit para unificar el stack de red
+- [ ] Añadir pruebas unitarias para los DTOs de la API y pruebas instrumentadas para la navegación por rol
+- [ ] Forzar HTTPS y eliminar la excepción de tráfico en texto plano
 
-## Contributing
+## Contribuciones
 
-This is an academic project developed for Universidad Piloto de Colombia. Suggestions and feedback are welcome via issues or pull requests.
+Este es un proyecto académico desarrollado para la Universidad Piloto de Colombia. Sugerencias y comentarios son bienvenidos a través de issues o pull requests.
 
-## License
+## Licencia
 
-This project is licensed under the MIT License.
+Este proyecto está licenciado bajo la Licencia MIT.
 
-## Author
+## Autor
 
 **Juan Diego Galindo**
 GitHub: [@juandiegogalindo](https://github.com/juandiegogalindo)
