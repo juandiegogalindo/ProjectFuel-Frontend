@@ -2,13 +2,6 @@
 
 Cliente Android nativo de **ProjectFuel**, una plataforma de gestión de una red de distribución de combustible desarrollada como proyecto de software para la Universidad Piloto de Colombia. La aplicación ofrece tres experiencias basadas en roles —cliente, operador de estación y distribuidor— sobre una única base de código, consumiendo la API REST de [ProjectFuel Backend](https://github.com/juandiegogalindo/ProjectFuel-Backend).
 
-![Java](https://img.shields.io/badge/Java-11-orange)
-![Android](https://img.shields.io/badge/Android-API%2023--36-3DDC84)
-![Gradle](https://img.shields.io/badge/Gradle-9.2.1-02303A)
-![Retrofit](https://img.shields.io/badge/Retrofit-2.11.0-informational)
-![Google Maps](https://img.shields.io/badge/Google%20Maps-SDK-4285F4)
-![License](https://img.shields.io/badge/licencia-MIT-green)
-
 ## Tabla de Contenidos
 
 - [Descripción General](#descripción-general)
@@ -16,16 +9,11 @@ Cliente Android nativo de **ProjectFuel**, una plataforma de gestión de una red
 - [Arquitectura](#arquitectura)
 - [Stack Tecnológico](#stack-tecnológico)
 - [Inventario de Pantallas](#inventario-de-pantallas)
-- [Integración con la API](#integración-con-la-api)
 - [Prerrequisitos](#prerrequisitos)
 - [Instalación y Puesta en Marcha](#instalación-y-puesta-en-marcha)
 - [Configuración](#configuración)
 - [Estructura del Proyecto](#estructura-del-proyecto)
-- [Pruebas](#pruebas)
-- [Limitaciones Conocidas](#limitaciones-conocidas)
-- [Roadmap](#roadmap)
 - [Contribuciones](#contribuciones)
-- [Licencia](#licencia)
 - [Autor](#autor)
 
 ## Descripción General
@@ -109,23 +97,6 @@ Dos pantallas (`MapaEstacionesActivity`, `RutaDistribucionActivity`) combinan ad
 
 </details>
 
-## Integración con la API
-
-Toda la comunicación con el backend se realiza a través de la interfaz Retrofit `ApiService`. Principales grupos de endpoints consumidos:
-
-| Dominio | Endpoints |
-|---|---|
-| Autenticación | `POST /usuarios/login`, `POST /usuarios/registro` |
-| Ubicaciones | `GET /ubicaciones`, `GET /ubicaciones/ciudades`, `GET /ubicaciones/zonas/{ciudad}` |
-| Precios | `GET/PUT /precios/ubicacion`, `GET/PUT /precios/zona` |
-| Inventario | `GET /inventarios/ubicacion/{idUbicacion}` |
-| Movimientos | `POST /movimientos/entrada`, `POST /movimientos/salida`, `GET /movimientos/ubicacion/{idUbicacion}` |
-| Pedidos | `POST /pedidos`, `GET /pedidos`, `GET /pedidos/pendientes(/{idUbicacion})`, `GET /pedidos/aceptados`, `GET /pedidos/cancelados`, `GET /pedidos/entregados/{idUbicacion}`, `PUT /pedidos/{id}/aceptar`, `PUT /pedidos/{id}/cancelar`, `PUT /pedidos/{id}/recibir`, `PUT /pedidos/{id}/entregar`, `GET /pedidos/dashboard/distribuidor` |
-| Combustibles | `GET /combustibles` |
-| Subsidios | `POST /subsidios/validar` |
-
-El endpoint de Directions usado para trazar rutas de conducción (`maps.googleapis.com/maps/api/directions/json`) se invoca por separado con Volley, fuera del stack de `ApiService`/Retrofit.
-
 ## Prerrequisitos
 
 - Android Studio (Ladybug o superior, compatible con AGP 9.0.1 / compileSdk 36)
@@ -166,7 +137,7 @@ private static final String BASE_URL = "http://192.168.2.10:8080/";
 
 Debe apuntarse a donde esté corriendo tu instancia del backend. Para un emulador que se conecta a un backend en la misma máquina anfitriona, `10.0.2.2` es la dirección de loopback convencional en lugar de `localhost`.
 
-**2. Clave de API de Google Maps**, actualmente duplicada en tres lugares: `res/values/strings.xml`, `AndroidManifest.xml`, y un string literal dentro de la URL de la petición Directions en `MapaEstacionesActivity.java`. Se debe reemplazar en los tres sitios por una clave propia (ver [Limitaciones Conocidas](#limitaciones-conocidas) para entender por qué no debería quedar fija en el código).
+**2. Clave de API de Google Maps**, actualmente duplicada en tres lugares: `res/values/strings.xml`, `AndroidManifest.xml`, y un string literal dentro de la URL de la petición Directions en `MapaEstacionesActivity.java`. Se debe reemplazar en los tres sitios por una clave propia.
 
 ## Estructura del Proyecto
 
@@ -201,50 +172,21 @@ ProjectFuel-Frontend/
 └── build.gradle / settings.gradle
 ```
 
-## Pruebas
-
-`src/test` y `src/androidTest` actualmente solo contienen las pruebas de ejemplo por defecto de Android Studio (`ExampleUnitTest`, `ExampleInstrumentedTest`) generadas al crear el proyecto. Se ejecutan con:
-
-```bash
-./gradlew test              # Pruebas unitarias JVM
-./gradlew connectedAndroidTest   # Pruebas instrumentadas, requieren un dispositivo/emulador conectado
-```
-
-Actualmente ninguna prueba propia del proyecto cubre el login, la navegación basada en rol o la integración con la API — ver [Limitaciones Conocidas](#limitaciones-conocidas).
-
-## Limitaciones Conocidas
-
-Documentadas aquí por transparencia, a partir de la revisión directa del código:
-
-- **Credenciales fijas en el código:** la clave de API de Google Maps está comprometida en texto plano en tres lugares distintos (`strings.xml`, `AndroidManifest.xml`, y en línea dentro de `MapaEstacionesActivity.java`). Debería vivir en un campo `local.properties`/`BuildConfig` no versionado y estar restringida por límites de uso en Google Cloud Console.
-- **URL de backend no portable:** `ApiClient.BASE_URL` apunta a una IP local fija (`192.168.2.10`), por lo que la app solo alcanza un backend de forma inmediata en la red LAN del desarrollador original. Debería moverse a una configuración por variante de build o a un ajuste en tiempo de ejecución.
-- **HTTP en texto plano:** el backend se invoca por `http://`, habilitado por un `network_security_config.xml` permisivo (`cleartextTrafficPermitted="true"`). Aceptable para desarrollo local, no para un despliegue real.
-- **Sin seguridad de sesión basada en token:** el estado de autenticación es una entrada plana de `SharedPreferences` (`rol`, `id_usuario`, `id_ubicacion`) sin token de sesión, expiración, ni revalidación del lado del servidor — un valor modificado localmente podría escalar el acceso a la interfaz según el rol, y el backend no tiene forma de rechazar una afirmación de cliente obsoleta o manipulada.
-- **Scaffolding de navegación sin uso:** `res/navigation/nav_graph.xml` todavía referencia un par `FirstFragment`/`SecondFragment` (y sus layouts `fragment_first`/`fragment_second`) de la plantilla por defecto de Android Studio "Fragment + Navigation". Ninguna de las dos clases de fragment existe en el árbol de código fuente — el grafo, sus strings (`first_fragment_label`, `second_fragment_label`, `next`, `previous`) y el string de relleno `lorem_ipsum` son residuos sin uso del arranque del proyecto y pueden eliminarse junto con las dependencias `navigation-fragment`/`navigation-ui` en `app/build.gradle`, ya que ninguna pantalla de la app usa realmente el Navigation Component.
-- **Renderizado de listas con `BaseAdapter`/`ListView`:** todas las pantallas con listas (historial de pedidos, movimientos, pedidos pendientes, etc.) usan el clásico `BaseAdapter` + `ListView` en lugar de `RecyclerView`, que es la recomendación actual de Android para el rendimiento del reciclaje de vistas y el soporte de animaciones.
-- **Mezcla de stacks de red:** la mayoría de las llamadas pasan por Retrofit, pero la integración con la API de Directions en `MapaEstacionesActivity` y `RutaDistribucionActivity` usa Volley directamente, añadiendo un segundo cliente HTTP al grafo de dependencias para un único caso de uso.
-- **Pruebas automatizadas mínimas:** ver [Pruebas](#pruebas).
-- **Identidad de proyecto residual:** el nombre de la app (`ScrumBacklog`) y el paquete Java (`co.edu.unipiloto.scrumbacklog`) siguen reflejando el título de trabajo original del proyecto en lugar de "ProjectFuel", lo cual puede resultar confuso para quien explore el código fuente por primera vez.
-
-## Roadmap
-
-- [ ] Externalizar `BASE_URL` y la clave de API de Google Maps mediante `BuildConfig`/`local.properties`
-- [ ] Añadir manejo de sesión basado en JWT con expiración de token
-- [ ] Eliminar el `nav_graph.xml` sin uso, sus fragments y las dependencias del Navigation Component
-- [ ] Migrar las pantallas con `ListView`/`BaseAdapter` a `RecyclerView`
-- [ ] Migrar las llamadas a la API de Directions a Retrofit para unificar el stack de red
-- [ ] Añadir pruebas unitarias para los DTOs de la API y pruebas instrumentadas para la navegación por rol
-- [ ] Forzar HTTPS y eliminar la excepción de tráfico en texto plano
-
 ## Contribuciones
 
 Este es un proyecto académico desarrollado para la Universidad Piloto de Colombia. Sugerencias y comentarios son bienvenidos a través de issues o pull requests.
 
-## Licencia
-
-Este proyecto está licenciado bajo la Licencia MIT.
+![Java](https://img.shields.io/badge/Java-11-orange)
+![Android](https://img.shields.io/badge/Android-API%2023--36-3DDC84)
+![Gradle](https://img.shields.io/badge/Gradle-9.2.1-02303A)
+![Retrofit](https://img.shields.io/badge/Retrofit-2.11.0-informational)
+![Google Maps](https://img.shields.io/badge/Google%20Maps-SDK-4285F4)
+![License](https://img.shields.io/badge/licencia-MIT-green)
 
 ## Autor
 
 **Juan Diego Galindo**
-GitHub: [@juandiegogalindo](https://github.com/juandiegogalindo)
+Estudiante de Ingeniería de Sistemas
+ 
+- GitHub: [@juandiegogalindo](https://github.com/juandiegogalindo)
+- LinkedIn: [Juan Diego Galindo - Full Stack](https://linkedin.com/in/jdgalindo6)
