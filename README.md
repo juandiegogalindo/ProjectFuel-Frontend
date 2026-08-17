@@ -181,12 +181,11 @@ Este es un proyecto académico desarrollado para la Universidad Piloto de Colomb
 ![Gradle](https://img.shields.io/badge/Gradle-9.2.1-02303A)
 ![Retrofit](https://img.shields.io/badge/Retrofit-2.11.0-informational)
 ![Google Maps](https://img.shields.io/badge/Google%20Maps-SDK-4285F4)
-![License](https://img.shields.io/badge/licencia-MIT-green)
 
 ## Autor
 
 **Juan Diego Galindo**
-Estudiante de Ingeniería de Sistemas
+Estudiante de Ingeniería de Sistemas - Séptimo Semestre
  
 - GitHub: [@juandiegogalindo](https://github.com/juandiegogalindo)
 - LinkedIn: [Juan Diego Galindo - Full Stack](https://linkedin.com/in/jdgalindo6)
